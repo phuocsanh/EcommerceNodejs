@@ -16,6 +16,12 @@ const rolesShop = {
   ADMIN: "ADMIN",
 };
 const accessService = {
+  async logout(keyStore) {
+    const delKey = await KeyTokenService.removeKeyById(keyStore._id);
+    console.log("🚀~ file: accessService.js:21 ~ logout ~ delKey:", delKey);
+    return delKey;
+  },
+
   async login({ email, password, refreshToken = null }) {
     const shop = await shopService.findShopByEmail(email);
     if (!shop) {

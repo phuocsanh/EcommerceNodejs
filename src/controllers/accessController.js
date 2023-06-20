@@ -5,6 +5,13 @@ const {
 } = require("../helpers/successRespone");
 const accessService = require("../services/accessService");
 const accessController = {
+  async logout(req, res, next) {
+    await accessService.logout(req.keyStore);
+    SendResponseSuccess({
+      res,
+      message: "Logout successfully",
+    });
+  },
   async login(req, res, next) {
     SendResponseSuccess({
       res,

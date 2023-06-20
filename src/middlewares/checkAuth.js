@@ -6,6 +6,7 @@ const crypto = require("node:crypto");
 
 const HEADER = {
   API_KEY: "x-api-key",
+  CLIENT_ID: "x-client-id",
   AUTHORIZATION: "authorization",
 };
 
@@ -51,4 +52,4 @@ const chekPermission = (permission) => {
   };
 };
 
-module.exports = { apiKey, chekPermission };
+module.exports = { apiKey, chekPermission, HEADER };
