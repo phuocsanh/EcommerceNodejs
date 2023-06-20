@@ -1,9 +1,9 @@
-@url = http://localhost:3060/v1/api/
+# @url = http://localhost:3060/v1/api/
+@url = http://localhost:8080/v1/api/
 
 ### signup
 POST {{url}}shop/signup
 Content-Type: application/json
-x-api-key:c0ed9cc855fac8acb1e120edd1f78cb821f9306fd92fcad09344576f771e695d8693e30df23d77ce8348df88dd7e98f747a14466d567feba75b5c576a4884fa0
 
 {
     "name":"Shop 3",

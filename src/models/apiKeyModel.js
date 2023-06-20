@@ -8,7 +8,6 @@ var apiKeyTokenSchema = new mongoose.Schema(
     key: {
       type: String,
       required: true,
-      unique: true,
     },
     status: {
       type: Boolean,
@@ -17,7 +16,7 @@ var apiKeyTokenSchema = new mongoose.Schema(
     permissions: {
       type: [String],
       default: [],
-      required: true,
+
       enum: ["0000", "11111", "2222"],
     },
   },

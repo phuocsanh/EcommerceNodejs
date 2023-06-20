@@ -7,6 +7,7 @@ const router = express.Router();
 
 // signup
 router.post("/shop/signup", asyncHandleError(accessController.signUp));
+
 //login
 router.post("/shop/login", asyncHandleError(accessController.login));
 // authentication
