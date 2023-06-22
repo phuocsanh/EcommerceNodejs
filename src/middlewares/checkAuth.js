@@ -12,23 +12,23 @@ const HEADER = {
 
 const apiKey = async (req, res, next) => {
   try {
-    const newKey = await apiKeyModel.create({
-      key: crypto.randomBytes(64).toString("hex"),
-      permissions: ["0000"],
-    });
+    // const newKey = await apiKeyModel.create({
+    //   key: crypto.randomBytes(64).toString("hex"),
+    //   permissions: ["0000"],
+    // });
 
-    // const key = req.headers[HEADER.API_KEY]?.toString();
-    // if (!key) {
-    //   return res.status(403).json({ message: "Forbidden key" });
-    // }
-    // const objKey = await findApiKeyById(key);
-    // if (!objKey) {
-    //   return res.status(403).json({ message: "Forbidden key obj" });
-    // }
-    // req.objKey = objKey;
-    // return next();
+    const key = req.headers[HEADER.API_KEY]?.toString();
+    if (!key) {
+      return res.status(403).json({ message: "Forbidden key" });
+    }
+    const objKey = await findApiKeyById(key);
+    if (!objKey) {
+      return res.status(403).json({ message: "Forbidden key obj" });
+    }
+    req.objKey = objKey;
+    return next();
   } catch (error) {
-    // return res.status(400).json({ message: error.message });
+    return res.status(400).json({ message: error.message });
   }
 };
 

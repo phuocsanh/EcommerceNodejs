@@ -5,7 +5,7 @@ const {
   db: { host, name, port },
 } = require("../configs/configConnect");
 // const connectString = `mongodb://${host}:${port}/${name}`;
-const connectString = `mongodb+srv://phuocsanhtps:0987383606tps@cluster0.4rzsihq.mongodb.net/?retryWrites=true&w=majority`;
+const connectString = `mongodb+srv://${process.env.USERNAME_DATABASE}:${process.env.PASSWORD_DATABASE}@ecommerce-nodejs.73lhj2n.mongodb.net/${process.env.DATABASE_NAME}?retryWrites=true&w=majority`;
 const { countConnect } = require("../helpers");
 
 class Database {
