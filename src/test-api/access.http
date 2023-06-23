@@ -1,5 +1,5 @@
-# @url = http://localhost:3060/v1/api/
-@url = http://localhost:8080/v1/api/
+@url = http://localhost:3060/v1/api/
+# @url = http://localhost:8080/v1/api/
 
 ### signup
 POST {{url}}shop/signup
