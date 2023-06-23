@@ -9,28 +9,28 @@ const accessController = {
     SendResponseSuccess({
       res,
       message: "Get token success",
-      metadata: await accessService.handleRefreshToken(res.body.refreshToken),
+      metadata: await accessService.handleRefreshToken(req.body),
     });
   },
   async logout(req, res, next) {
-    await accessService.logout(req.keyStore);
     SendResponseSuccess({
       res,
       message: "Logout successfully",
+      metadata: await accessService.logout(req.keyStore),
     });
   },
   async login(req, res, next) {
     SendResponseSuccess({
       res,
       message: "Login successfully",
-      metaData: await accessService.login(req.body),
+      metadata: await accessService.login(req.body),
     });
   },
   async signUp(req, res, next) {
     SendResponseCreate({
       res,
       message: "Register successfully",
-      metaData: await accessService.signUp(req.body),
+      metadata: await accessService.signUp(req.body),
     });
   },
 };

@@ -1,7 +1,14 @@
 "use strict";
-
 const JWT = require("jsonwebtoken");
 const lodash = require("lodash");
+const mongoose = require("mongoose");
+
+class MongoObjectId {
+  static new(userId) {
+    return new mongoose.Types.ObjectId(userId);
+  }
+}
+
 const createTokenPair = (payload, publicKey, privateKey) => {
   try {
     // accessToken
@@ -24,6 +31,7 @@ const createTokenPair = (payload, publicKey, privateKey) => {
     });
     return { accessToken, refreshToken };
   } catch (error) {
+    console.log("~ file: index.js:34 ~ createTokenPair ~ error:", error);
     return error;
   }
 };
@@ -35,4 +43,5 @@ const getDataByFields = ({ fields = [], object = {} }) => {
 module.exports = {
   createTokenPair,
   getDataByFields,
+  MongoObjectId,
 };

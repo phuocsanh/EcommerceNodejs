@@ -2,8 +2,9 @@
 
 const apiKeyModel = require("../models/apiKeyModel");
 const { findApiKeyById } = require("../services/apiKeyService");
+const JWT = require("jsonwebtoken");
+
 const crypto = require("node:crypto");
-const { JsonWebTokenError } = require("jsonwebtoken");
 
 const HEADER = {
   API_KEY: "x-api-key",
@@ -38,10 +39,10 @@ const chekPermission = (permission) => {
     if (!req.objKey.permissions) {
       return res.status(403).json({ message: "Permisson denied" });
     }
-    console.log(
-      // "~ file: checkAuth.js:40 ~ return ~ req.objKey.permissions:",
-      req.objKey.permissions
-    );
+    // console.log(
+    //   // "~ file: checkAuth.js:40 ~ return ~ req.objKey.permissions:",
+    //   req.objKey.permissions
+    // );
     const validPermissions = req.objKey.permissions.includes(permission);
     if (!validPermissions) {
       return res.status(403).json({ message: "Permission denied" });

@@ -4,6 +4,7 @@
 ### signup
 POST {{url}}shop/signup
 Content-Type: application/json
+x-api-key:97bb76d929bafead000c14308df98e9aea30d09ebab5be6dfe3621d040ccb7e3ddfde7afd03dfe103db328e6b7c91817aebff9b40562c296364d4c7d20adbed0
 
 {
     "name":"Shop 3",
@@ -15,7 +16,7 @@ Content-Type: application/json
 ### login
 POST {{url}}shop/login
 Content-Type: application/json
-x-api-key:c0ed9cc855fac8acb1e120edd1f78cb821f9306fd92fcad09344576f771e695d8693e30df23d77ce8348df88dd7e98f747a14466d567feba75b5c576a4884fa0
+x-api-key:97bb76d929bafead000c14308df98e9aea30d09ebab5be6dfe3621d040ccb7e3ddfde7afd03dfe103db328e6b7c91817aebff9b40562c296364d4c7d20adbed0
 
 {
     "email":"shop@example78.com",

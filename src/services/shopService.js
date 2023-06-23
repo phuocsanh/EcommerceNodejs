@@ -12,7 +12,7 @@ const shopService = {
       status: 1,
     }
   ) {
-    return await shopModel.findOne({ email }).select(select).lean();
+    return await shopModel.findOne({ email: email }).select(select).lean();
   },
 };
 

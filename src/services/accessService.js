@@ -22,7 +22,11 @@ const rolesShop = {
   ADMIN: "ADMIN",
 };
 const accessService = {
-  async handleRefreshToken(refreshToken) {
+  async handleRefreshToken({ refreshToken }) {
+    console.log(
+      " ~ file: accessService.js:26 ~ handleRefreshToken ~ refreshToken:",
+      refreshToken
+    );
     // Check token used
     const foundToken = await KeyTokenService.findByRefreshTokenUsed(
       refreshToken
@@ -32,17 +36,17 @@ const accessService = {
         refreshToken,
         foundToken.privateKey
       );
-      console.log(
-        "🚀 ~ file: accessService.js:27 ~ handleRefreshToken ~ userId, email:",
-        userId,
-        email
-      );
+
       await KeyTokenService.deleteKeyById(userId);
       throw new ForbiddenError("Something wrong happened, Please relogin!");
     }
     //Nếu không có refresh token used
     const holderToken = await KeyTokenService.findByRefreshToken(refreshToken);
-    if (!holderToken) throw new AuthFailureError("Shop not register");
+    console.log(
+      "~ file: accessService.js:45 ~ handleRefreshToken ~ holderToken:",
+      holderToken
+    );
+    if (!holderToken) throw new AuthFailureError("Shop not register1");
 
     // Verify Token
     const { userId, email } = await verifyJWT(
@@ -51,13 +55,13 @@ const accessService = {
     );
     // Check userId
     const foundShop = findShopByEmail(email);
-    if (!foundShop) throw new AuthFailureError("Shop not register");
+    if (!foundShop) throw new AuthFailureError("Shop not register2");
     const tokens = await createTokenPair(
       { userId, email },
       holderToken.publicKey,
       holderToken.privateKey
     );
-    await holderToken.update({
+    await holderToken.updateOne({
       $set: {
         refreshToken: tokens.refreshToken,
       },
