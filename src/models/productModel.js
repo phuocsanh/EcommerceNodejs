@@ -15,6 +15,10 @@ var productSchema = new mongoose.Schema(
       trim: true,
       maxLength: 150,
     },
+    product_price: {
+      type: Number,
+      required: true,
+    },
     product_thumb: {
       type: String,
       required: true,
@@ -23,7 +27,7 @@ var productSchema = new mongoose.Schema(
     product_description: { type: String },
     product_quantity: { type: Number, required: true },
     product_type: {
-      stype: String,
+      type: String,
       required: true,
       enum: ["Electronic", "Clothing", "Furniture"],
     },
