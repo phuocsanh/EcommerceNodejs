@@ -5,10 +5,13 @@ const {
 } = require("../helpers/successRespone");
 const ProductController = {
   async createProduct(req, res, next) {
-    new SendResponseCreate({
+    SendResponseCreate({
       res,
       message: "Create new product successfully",
-      metadata: await ProductFactory.createProduct(req.body.type, req.body),
+      metadata: await ProductFactory.createProduct(req.body.product_type, {
+        ...req.body,
+        product_shop: req.user.userId,
+      }),
     });
   },
 };

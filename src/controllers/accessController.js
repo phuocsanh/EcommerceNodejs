@@ -9,7 +9,11 @@ const accessController = {
     SendResponseSuccess({
       res,
       message: "Get token success",
-      metadata: await accessService.handleRefreshToken(req.body),
+      metadata: await accessService.handleRefreshToken({
+        refreshToken: req.refreshToken,
+        user: req.user,
+        keyStore: req.keyStore,
+      }),
     });
   },
   async logout(req, res, next) {

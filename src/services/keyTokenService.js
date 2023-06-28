@@ -28,9 +28,7 @@ const KeyTokenService = {
   },
 
   async findUserById(userId) {
-    return await keyTokenModel
-      .findOne({ user: MongoObjectId.new(userId) })
-      .lean();
+    return await keyTokenModel.findOne({ user: MongoObjectId.new(userId) });
   },
   async removeKeyById(id) {
     return await keyTokenModel.deleteOne({ _id: id });

@@ -46,6 +46,11 @@ var productSchema = new mongoose.Schema(
 
 var clothingSchema = new mongoose.Schema(
   {
+    product_shop: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "shopModel",
+      required: true,
+    },
     brand: {
       type: String,
       trim: true,
@@ -67,6 +72,11 @@ var clothingSchema = new mongoose.Schema(
 );
 var electronicSchema = new mongoose.Schema(
   {
+    product_shop: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "shopModel",
+      required: true,
+    },
     manufacturer: {
       type: String,
       trim: true,
