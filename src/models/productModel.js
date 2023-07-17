@@ -6,6 +6,8 @@ const COLLECTION_NAME_CLOTHING = "clothings";
 const DOCUMENT_NAME_CLOTHING = "clothingsModel";
 const COLLECTION_NAME_ELECTRONIC = "electronics";
 const DOCUMENT_NAME_ELECTRONIC = "electronicModel";
+const COLLECTION_NAME_FURNITURE = "furnitures";
+const DOCUMENT_NAME_FURNITURE = "furnitureModel";
 // Declare the Schema of the Mongo model
 var productSchema = new mongoose.Schema(
   {
@@ -64,6 +66,11 @@ var clothingSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    product_shop: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "shopModel",
+      required: true,
+    },
   },
   {
     timestamps: true,
@@ -90,10 +97,42 @@ var electronicSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    product_shop: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "shopModel",
+      required: true,
+    },
   },
   {
     timestamps: true,
     collection: COLLECTION_NAME_ELECTRONIC,
+  }
+);
+
+var furnitureSchema = new mongoose.Schema(
+  {
+    brand: {
+      type: String,
+      trim: true,
+      maxLength: 150,
+    },
+    size: {
+      type: String,
+      trim: true,
+    },
+    material: {
+      type: String,
+      trim: true,
+    },
+    product_shop: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "shopModel",
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+    collection: COLLECTION_NAME_FURNITURE,
   }
 );
 
@@ -102,4 +141,5 @@ module.exports = {
   productModel: mongoose.model(DOCUMENT_NAME_PRODUCT, productSchema),
   clothingModel: mongoose.model(DOCUMENT_NAME_CLOTHING, clothingSchema),
   electronicModel: mongoose.model(DOCUMENT_NAME_ELECTRONIC, electronicSchema),
+  furnitureModel: mongoose.model(DOCUMENT_NAME_FURNITURE, furnitureSchema),
 };
