@@ -14,5 +14,21 @@ const ProductController = {
       }),
     });
   },
+
+  /**
+   * getAllDraftsForShop to get list draft
+   * @param {Number} limit
+   * @param {Number} skip
+   * @return {JSON}
+   */
+  async getAllDraftsForShop(req, res, next) {
+    SendResponseSuccess({
+      res,
+      message: "Get list Draft successfully",
+      metadata: await ProductFactory.findAllDraftsForShop({
+        product_shop: req.user.userId,
+      }),
+    });
+  },
 };
 module.exports = ProductController;

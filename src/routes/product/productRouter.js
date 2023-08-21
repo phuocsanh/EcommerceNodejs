@@ -12,5 +12,8 @@ router.post(
   "/product/createProduct",
   asyncHandleError(productController.createProduct)
 );
-
+router.get(
+  "/product/drafts/all",
+  asyncHandleError(productController.getAllDraftsForShop)
+);
 module.exports = router;

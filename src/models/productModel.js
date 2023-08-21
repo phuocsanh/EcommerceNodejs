@@ -1,5 +1,6 @@
 "use strict";
-const mongoose = require("mongoose"); // Erase if already required
+const mongoose = require("mongoose");
+const slugify = require("slugify"); // Erase if already required
 const COLLECTION_NAME_PRODUCT = "products";
 const DOCUMENT_NAME_PRODUCT = "productModel";
 const COLLECTION_NAME_CLOTHING = "clothings";
@@ -26,7 +27,16 @@ var productSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    product_ratingsAverage: {
+      type: Number,
+      default: 4.5,
+      min: [1, "Rating must be above 1.0"],
+      max: [5, "Rating must be above 5.0"],
+      set: (value) => Math.round(value * 10) / 10,
+    },
+    product_variations: { type: Array, default: [] },
     product_description: { type: String },
+    product_slug: { type: String },
     product_quantity: { type: Number, required: true },
     product_type: {
       type: String,
@@ -39,6 +49,8 @@ var productSchema = new mongoose.Schema(
       required: true,
     },
     product_attributes: { type: mongoose.Schema.Types.Mixed, required: true },
+    isDraft: { type: Boolean, default: true, index: true, select: false },
+    isPublished: { type: Boolean, default: false, index: true, select: false },
   },
   {
     timestamps: true,
@@ -46,6 +58,11 @@ var productSchema = new mongoose.Schema(
   }
 );
 
+//middleware runs before save() and create().....
+productSchema.pre("save", function (next) {
+  this.product_slug = slugify(this.product_name, { lower: true });
+  next();
+});
 var clothingSchema = new mongoose.Schema(
   {
     product_shop: {
