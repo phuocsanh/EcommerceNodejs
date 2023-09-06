@@ -39,9 +39,13 @@ const createTokenPair = (payload, publicKey, privateKey) => {
 const getDataByFields = ({ fields = [], object = {} }) => {
   return lodash.pick(object, fields);
 };
+const getSelectData = (select = []) => {
+  return Object.fromEntries(select.map((e) => [e, 1]));
+};
 
 module.exports = {
   createTokenPair,
   getDataByFields,
   MongoObjectId,
+  getSelectData,
 };
