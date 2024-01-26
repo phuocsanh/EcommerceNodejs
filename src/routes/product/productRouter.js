@@ -6,36 +6,33 @@ const { asyncHandleError, authentication } = require("../../helpers");
 const router = express.Router();
 
 router.get(
-  "/product/search/:keySearch",
+  "/search/:keySearch",
   asyncHandleError(productController.getlistSearchProduct)
 );
-router.get(
-  "/product/search/:keySearch",
-  asyncHandleError(productController.findAllProducts)
-);
-
+router.get("", asyncHandleError(productController.findAllProducts));
+router.get("/:product_id", asyncHandleError(productController.findProduct));
 // authentication
 router.use(authentication);
-
+router.patch("/:productId", asyncHandleError(productController.updateProduct));
 router.post(
-  "/product/createProduct",
+  "/createProduct",
   asyncHandleError(productController.createProduct)
 );
 router.post(
-  "/product/publish/:id",
+  "/publish/:id",
   asyncHandleError(productController.publishProductByShop)
 );
 router.post(
-  "/product/unPublish/:id",
+  "/unPublish/:id",
   asyncHandleError(productController.unPublishProductByShop)
 );
 
 router.get(
-  "/product/drafts/all",
+  "/drafts/all",
   asyncHandleError(productController.getAllDraftsForShop)
 );
 router.get(
-  "/product/publish/all",
+  "/publish/all",
   asyncHandleError(productController.getAllPublishForShop)
 );
 module.exports = router;

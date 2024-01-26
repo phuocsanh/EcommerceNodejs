@@ -1,13 +1,11 @@
 "use strict";
 const JWT = require("jsonwebtoken");
 const lodash = require("lodash");
-const mongoose = require("mongoose");
+const { Types } = require("mongoose");
 
-class MongoObjectId {
-  static new(userId) {
-    return new mongoose.Types.ObjectId(userId);
-  }
-}
+const mongoObjectId = (id) => {
+  return new Types.ObjectId(id);
+};
 
 const createTokenPair = (payload, publicKey, privateKey) => {
   try {
@@ -39,13 +37,50 @@ const createTokenPair = (payload, publicKey, privateKey) => {
 const getDataByFields = ({ fields = [], object = {} }) => {
   return lodash.pick(object, fields);
 };
+// ['a','b'] convert to {a:1, b:1}
 const getSelectData = (select = []) => {
   return Object.fromEntries(select.map((e) => [e, 1]));
+};
+const unGetSelectData = (select = []) => {
+  return Object.fromEntries(select.map((e) => [e, 0]));
+};
+
+const removeUndefinedObject = (obj) => {
+  Object.keys(obj).forEach((k) => {
+    if (obj[k] == null || obj[k] == undefined) {
+      delete obj[k];
+    }
+    if (typeof obj[k] == "object" && !Array.isArray(obj[k])) {
+      removeUndefinedObject(obj[k]);
+    }
+  });
+
+  return obj;
+};
+
+const updateNestedObjectParser = (objParams) => {
+  const obj = removeUndefinedObject(objParams);
+  const final = {};
+  Object.keys(obj).forEach((k) => {
+    if (typeof obj[k] == "object" && !Array.isArray(obj[k])) {
+      const res = updateNestedObjectParser(obj[k]);
+      Object.keys(res).forEach((a) => {
+        final[`${k}.${a}`] = res[a];
+      });
+    } else {
+      final[k] = obj[k];
+    }
+  });
+
+  return final;
 };
 
 module.exports = {
   createTokenPair,
   getDataByFields,
-  MongoObjectId,
+  mongoObjectId,
   getSelectData,
+  unGetSelectData,
+  removeUndefinedObject,
+  updateNestedObjectParser,
 };

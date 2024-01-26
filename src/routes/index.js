@@ -5,7 +5,9 @@ const router = express.Router();
 
 router.use(apiKey);
 router.use(chekPermission("0000"));
-router.use("/v1/api", require("./product/productRouter"));
-router.use("/v1/api", require("./access/accessRouter"));
+
+router.use("/v1/api/discount", require("./discount/discountRouter"));
+router.use("/v1/api/product", require("./product/productRouter"));
+router.use("/v1/api/shop", require("./access/accessRouter"));
 
 module.exports = router;

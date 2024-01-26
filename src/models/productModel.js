@@ -84,11 +84,6 @@ var clothingSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    product_shop: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "shopModel",
-      required: true,
-    },
   },
   {
     timestamps: true,
@@ -114,11 +109,6 @@ var electronicSchema = new mongoose.Schema(
     color: {
       type: String,
       trim: true,
-    },
-    product_shop: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "shopModel",
-      required: true,
     },
   },
   {

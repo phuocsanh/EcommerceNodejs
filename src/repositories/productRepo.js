@@ -5,9 +5,10 @@ const {
   clothingSchema,
   electronicModel,
   furnitureModel,
-} = require("../../models/productModel");
-const { getDataSelect } = require("../../utils");
+} = require("../models/productModel");
+const { getDataSelect, unGetSelectData } = require("../utils");
 const { Types } = require("mongoose");
+
 const publishProductByShop = async ({ product_shop, product_id }) => {
   const foundShop = await productModel.findOne({
     product_shop: new Types.ObjectId(product_shop),
@@ -51,8 +52,10 @@ const findAllProducts = async ({ limit, sort, page, filter, select }) => {
     .lean();
   return products;
 };
-const findProduct = async ({ query, limit, skip }) => {
-  return await queryProduct({ query, limit, skip });
+const findProduct = async ({ product_id, unSelect }) => {
+  return await productModel
+    .findById(product_id)
+    .select(unGetSelectData(unSelect));
 };
 const findAllPublishForShop = async ({ query, limit, skip }) => {
   return await queryProduct({ query, limit, skip });
@@ -70,6 +73,18 @@ const searchProductByUser = async ({ keySearch }) => {
   return results;
 };
 
+const updateProductById = async ({
+  productId,
+  bodyUpdate,
+  model,
+  isNew = true,
+}) => {
+  console.log("~ file: productRepo.js:83 ~ bodyUpdate:", productId, bodyUpdate);
+  const update = await model.findByIdAndUpdate(productId, bodyUpdate, {
+    new: isNew,
+  });
+  return update;
+};
 const queryProduct = async ({ query, limit, skip }) => {
   return await productModel
     .find(query)
@@ -88,4 +103,6 @@ module.exports = {
   unPublishProductByShop,
   searchProductByUser,
   findAllProducts,
+  findProduct,
+  updateProductById,
 };

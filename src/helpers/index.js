@@ -14,6 +14,7 @@ const authentication = asyncHandleError(async (req, res, next) => {
   const userId = req.headers[HEADER.CLIENT_ID];
   if (!userId) throw new AuthFailureError("Invalid request");
   // get access token
+
   const keyStore = await findUserById(userId);
   if (!keyStore) throw new NotFoundError("Not found keyStore");
 
@@ -41,6 +42,7 @@ const authentication = asyncHandleError(async (req, res, next) => {
       throw new AuthFailureError("Invalid userId");
     req.keyStore = keyStore;
     req.user = decodeUser;
+    console.log(" ~ authentication ~ decodeUser:", decodeUser);
     return next();
   } catch (error) {
     throw error;

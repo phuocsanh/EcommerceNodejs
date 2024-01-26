@@ -3,8 +3,21 @@ const {
   SendResponseCreate,
   SendResponseSuccess,
 } = require("../helpers/successRespone");
-const { publishProductByShop } = require("../services/productService");
 const ProductController = {
+  async updateProduct(req, res, next) {
+    SendResponseSuccess({
+      res,
+      message: "Update product successfully",
+      metadata: await ProductFactory.updateProduct(
+        req.body.product_type,
+        req.params.productId,
+        {
+          ...req.body,
+          product_shop: req.user.userId,
+        }
+      ),
+    });
+  },
   async createProduct(req, res, next) {
     SendResponseCreate({
       res,
@@ -72,6 +85,15 @@ const ProductController = {
       res,
       message: "Get all prodcuct successfully",
       metadata: await ProductFactory.findAllProducts(req.query),
+    });
+  },
+  async findProduct(req, res, next) {
+    SendResponseSuccess({
+      res,
+      message: "Find prodcuct successfully",
+      metadata: await ProductFactory.findProduct({
+        product_id: req.params.product_id,
+      }),
     });
   },
 };

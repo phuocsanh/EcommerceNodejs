@@ -1,6 +1,6 @@
 "use strict";
 const keyTokenModel = require("../models/keyTokenModel");
-const { MongoObjectId } = require("../utils");
+const { mongoObjectId } = require("../utils");
 const KeyTokenService = {
   async createKeyToken({ userId, publicKey, privateKey, refreshToken }) {
     try {
@@ -28,7 +28,7 @@ const KeyTokenService = {
   },
 
   async findUserById(userId) {
-    return await keyTokenModel.findOne({ user: MongoObjectId.new(userId) });
+    return await keyTokenModel.findOne({ user: mongoObjectId(userId) });
   },
   async removeKeyById(id) {
     return await keyTokenModel.deleteOne({ _id: id });
