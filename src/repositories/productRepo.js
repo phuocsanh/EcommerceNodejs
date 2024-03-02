@@ -6,7 +6,7 @@ const {
   electronicModel,
   furnitureModel,
 } = require("../models/productModel");
-const { getDataSelect, unGetSelectData } = require("../utils");
+const { getSelectData, unGetSelectData } = require("../utils");
 const { Types } = require("mongoose");
 
 const publishProductByShop = async ({ product_shop, product_id }) => {
@@ -48,7 +48,7 @@ const findAllProducts = async ({ limit, sort, page, filter, select }) => {
     .sort(sortBy)
     .skip(skip)
     .limit(limit)
-    .select(getDataSelect(select))
+    .select(getSelectData(select))
     .lean();
   return products;
 };

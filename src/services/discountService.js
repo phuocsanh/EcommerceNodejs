@@ -77,13 +77,7 @@ class DiscountService {
   }
   static async updatdeDiscountCode() {}
 
-  static async getAllDiscountCodeWithProduct({
-    code,
-    shopId,
-    userId,
-    limit,
-    page,
-  }) {
+  static async getAllDiscountCodeWithProduct({ code, shopId, limit, page }) {
     const foundDiscount = await discountModel
       .findOne({
         discount_code: code,
@@ -105,7 +99,7 @@ class DiscountService {
         select: ["product_name"],
       });
     }
-    if (discount_applies_to === "speccific") {
+    if (discount_applies_to === "specific") {
       // get product_ids
       products = await findAllProducts({
         filter: { _id: { $in: discount_product_ids }, isPublished: true },
@@ -119,11 +113,15 @@ class DiscountService {
   }
 
   static async getAllDiscountCodeByShop({ limit, page, shopId }) {
+    console.log(
+      "🚀 ~ DiscountService ~ getAllDiscountCodeByShop ~ shopId:",
+      shopId
+    );
     const discounts = await findAllDiscountCodesUnselect({
       limit: +limit,
       page: +page,
       filter: {
-        discount_shopId: F(shopId),
+        discount_shopId: mongoObjectId(shopId),
         discount_is_active: true,
       },
       unSelect: ["_v", "discount_shopId"],
@@ -136,7 +134,7 @@ class DiscountService {
       model: discountModel,
       filter: {
         discount_code: codeId,
-        discount_shopId: FF(shopId),
+        discount_shopId: mongoObjectId(shopId),
       },
     });
 
