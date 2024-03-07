@@ -6,9 +6,11 @@ const {
   electronicModel,
   furnitureModel,
 } = require("../models/productModel");
-const { getSelectData, unGetSelectData } = require("../utils");
+const { getSelectData, unGetSelectData, mongoObjectId } = require("../utils");
 const { Types } = require("mongoose");
-
+const getProductById = async (productId) => {
+  return await productModel.findOne({ _id: mongoObjectId(productId) }).lean();
+};
 const publishProductByShop = async ({ product_shop, product_id }) => {
   const foundShop = await productModel.findOne({
     product_shop: new Types.ObjectId(product_shop),
@@ -105,4 +107,5 @@ module.exports = {
   findAllProducts,
   findProduct,
   updateProductById,
+  getProductById,
 };

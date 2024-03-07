@@ -27,7 +27,7 @@ const CartController = {
     SendResponseSuccess({
       res,
       message: "get list succsess",
-      metadata: await CartService.getListUserCart(req.query),
+      metadata: await CartService.getListUserCart(req.query.userId),
     });
   },
 };
