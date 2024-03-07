@@ -1,5 +1,8 @@
 "use strict";
-const { NotFoundError } = require("../../src/helpers/errorResponse");
+const {
+  NotFoundError,
+  BadRequestError,
+} = require("../../src/helpers/errorResponse");
 const cartModel = require("../models/cartModel");
 const { getProductById } = require("../repositories/productRepo");
 class CartService {
@@ -13,6 +16,7 @@ class CartService {
       options = { upsert: true, new: true };
     return await cartModel.findOneAndUpdate(query, updateOrInsert, options);
   }
+
   static async updateUserCartQuantity({ userId, product }) {
     const { productId, quantity } = product;
 
@@ -32,16 +36,17 @@ class CartService {
   static async addToCart({ userId, product = {} }) {
     const userCart = await cartModel.findOne({ cart_userId: userId });
     //check Cart có tồn tại hay không
-    if (!userCart) {
+    if (!userCart || userCart.cart_products.length) {
       return await CartService.createUserCart({ userId, product });
     }
     // Nếu có giỏ hàng rồi nhưng chưa có sản phẩm
-    if (!userCart.cart_count_product.length) {
+    if (!userCart.cart_products.length) {
       userCart.cart_products = [product];
       return await userCart.save();
     }
+
     // Nếu giở hàng tồn tại và có sản phẩm này thì update quantity
-    return await CartService.updateUserCartQuantity({ userId, product });
+    throw new BadRequestError("Error request");
   }
 
   // update cart
@@ -65,14 +70,12 @@ class CartService {
       shop_oder_ids[0]?.item_products[0];
 
     const foundProduct = await getProductById(productId);
-    if (!foundProduct) throw NotFoundError("Not found product");
+    if (!foundProduct) throw new NotFoundError("Not found product");
     //compare
     if (foundProduct.product_shop.toString() !== shop_oder_ids[0].shopId) {
-      throw NotFoundError("Product do not belong to shop");
+      throw new NotFoundError("Product do not belong to shop");
     }
-    if (quantity === 0) {
-      //delete
-    }
+
     return await CartService.updateUserCartQuantity({
       userId,
       product: { productId, quantity: quantity - old_quantity },

@@ -2,7 +2,7 @@
 
 const { unGetSelectData, getSelectData } = require("../utils");
 
-const checkDiscountExist = async (model, filter, lean = true) => {
+const checkDiscountExist = async ({ model, filter }) => {
   return await model.findOne(filter).lean();
 };
 
