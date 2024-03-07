@@ -8,7 +8,7 @@ const { checkProductByServer } = require("../repositories/productRepo");
 const DiscountService = require("./discountService");
 class CheckoutService {
   static async checkoutReview({ cartId, userId, shop_order_ids }) {
-    // check login or no login 
+    // check login or no login
     /*
 		{
 			cartId,
@@ -104,6 +104,23 @@ class CheckoutService {
       shop_order_ids_new,
       checkout_oder,
     };
+  }
+  static async orderByUser({
+    shop_order_ids,
+    cartId,
+    userId,
+    user_address = {},
+    user_payment = {},
+  }) {
+    const { shop_order_ids_new, checkout_oder } =
+      await CheckoutService.checkoutReview({ cartId, userId, shop_order_ids });
+    // Check lại một lần nữa xem vượt tồn kho hay không
+    // get new array products
+    const products = shop_order_ids_new.flatMap((order) => order.item_products);
+    console.log("🚀 ~ CheckoutService ~ product:", products);
+    for (let i = 0; i < products.length; i++) {
+      const { productId, quantity } = products[i];
+    }
   }
 }
 module.exports = CheckoutService;
