@@ -8,7 +8,7 @@ const { checkProductByServer } = require("../repositories/productRepo");
 const DiscountService = require("./discountService");
 class CheckoutService {
   static async checkoutReview({ cartId, userId, shop_order_ids }) {
-    // check login or no login
+    // check login or no login 
     /*
 		{
 			cartId,
@@ -38,7 +38,7 @@ class CheckoutService {
 
 		} 
 	 */
-    // check cart id có  tồn tại không
+    // check cart id có tồn tại không
     const foundCart = await findCartById(cartId);
     if (!foundCart) throw new NotFoundError("Cart does not exists");
     const checkout_oder = {
