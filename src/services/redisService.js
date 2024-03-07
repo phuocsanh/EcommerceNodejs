@@ -16,6 +16,7 @@ const acquireLock = async (productId, quantity, cartId) => {
     console.log("🚀 ~ acquireLock ~ result:", result);
     if (result === 1) {
       // Thao tác với inventory
+
       return key;
     } else {
       await new Promise((resolve) => setTimeout(resolve, 50));
