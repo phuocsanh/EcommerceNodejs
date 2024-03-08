@@ -3,9 +3,11 @@ const {
   NotFoundError,
   BadRequestError,
 } = require("../../src/helpers/errorResponse");
+const orderModel = require("../models/orderModel");
 const { findCartById } = require("../repositories/cartRepo");
 const { checkProductByServer } = require("../repositories/productRepo");
 const DiscountService = require("./discountService");
+const { acquireLock, releaseLock } = require("./redisService");
 class CheckoutService {
   static async checkoutReview({ cartId, userId, shop_order_ids }) {
     // check login or no login
@@ -118,9 +120,37 @@ class CheckoutService {
     // get new array products
     const products = shop_order_ids_new.flatMap((order) => order.item_products);
     console.log("🚀 ~ CheckoutService ~ product:", products);
+    const acquireProduct = [];
     for (let i = 0; i < products.length; i++) {
       const { productId, quantity } = products[i];
+      const keyLock = await acquireLock(productId, quantity, cartId);
+      acquireProduct.push(keyLock ? true : false);
+      if (keyLock) {
+        await releaseLock(keyLock);
+      }
     }
+    // Nếu có một sản phẩm hết hàng trong kho
+    if (acquireProduct.includes(false)) {
+      throw new BadRequestError(
+        "Một số sản phẩm đã được cập nhật, vui lòng quay lại giỏ hàng"
+      );
+    }
+    const newOrder = orderModel.create({
+      order_userId: userId,
+      order_checkout: checkout_oder,
+      order_shipping: user_address,
+      order_payment: user_payment,
+      order_products: shop_order_ids_new,
+    });
+    // Trường hợp nếu insert thành công, thì remove product trong giỏ hàng
+    if (newOrder) {
+      // remove product in my cart
+    }
+    return newOrder;
   }
+  static async getOrderByUser() {}
+  static async getOneOrderByUser() {}
+  static async cancelOrderByUser() {}
+  static async updateOrderStatusByShop() {}
 }
 module.exports = CheckoutService;

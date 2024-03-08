@@ -1,10 +1,13 @@
 "use strict";
 const express = require("express");
-const { apiKey, chekPermission } = require("../middlewares/checkAuth");
 const router = express.Router();
-
+const { apiKey, chekPermission } = require("../middlewares/checkAuth");
+const { pushToLogDiscord } = require("../middlewares");
+// Add log to discord
+router.use(pushToLogDiscord);
 router.use(apiKey);
 router.use(chekPermission("0000"));
+router.use("/v1/api/inventory", require("./inventory/inventoryRouter"));
 router.use("/v1/api/checkout", require("./checkout/checkoutRouter"));
 router.use("/v1/api/cart", require("./cart/cartRouter"));
 router.use("/v1/api/discount", require("./discount/discountRouter"));
