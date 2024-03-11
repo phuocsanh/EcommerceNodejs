@@ -1,7 +1,15 @@
 const { SendResponseSuccess } = require("../helpers/successRespone");
 const CheckoutService = require("../services/checkoutService");
+const { setRedis } = require("../services/redisService");
 
 const CheckoutController = {
+  async testRedisService(req, res, next) {
+    SendResponseSuccess({
+      res,
+      message: "testRedisService",
+      metadata: await setRedis(req.body),
+    });
+  },
   async checkoutReview(req, res, next) {
     SendResponseSuccess({
       res,

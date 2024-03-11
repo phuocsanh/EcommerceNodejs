@@ -14,11 +14,10 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
-
 // Test pub sub
-require("../src/tests/inventoryTest");
-const productTest = require("../src/tests/productTest");
-productTest.purchaseProduct("product:001", 10);
+// require("../src/tests/inventoryTest");
+// const productTest = require("../src/tests/productTest");
+// productTest.purchaseProduct("product:001", 10);
 // app.use(morgan("combined"));
 app.use(helmet());
 app.use(compression());
