@@ -1,12 +1,9 @@
-const Redis = require("redis");
+const { getRedis } = require("../dbs/initRedis");
+const { instanceConnect: redisClient } = getRedis();
 class RedisPubSubService {
-  constructor() {
-    this.subscriber = Redis.createClient();
-    this.publisher = Redis.createClient();
-  }
   publish(channel, message) {
     return new Promise((resovel, reject) => {
-      this.publisher.publish(channel, message, (err, reply) => {
+      redisClient.publish(channel, message, (err, reply) => {
         if (err) {
           reject(err);
         } else {
@@ -16,12 +13,15 @@ class RedisPubSubService {
     });
   }
   subscribe(channel, callback) {
-    this.subscriber.subscribe(channel);
-    this.subscriber.on("message", (subscriberChannel, massage) => {
-      if (channel === subscriberChannel) {
-        callback(channel, massage);
-      }
+    redisClient.subscribe(channel);
+
+    redisClient.on("message", (subscriberChannel, massage) => {
+      callback(channel, massage);
     });
+    this.unsubscribe(channel);
+  }
+  unsubscribe(channel) {
+    redisClient.unsubscribe(channel);
   }
 }
 module.exports = new RedisPubSubService();

@@ -7,6 +7,7 @@ const { apiKey, chekPermission } = require("../middlewares/checkAuth");
 // router.use(pushToLogDiscord);
 router.use(apiKey);
 router.use(chekPermission("0000"));
+router.use("/v1/api/comment", require("./comment/commentRouter"));
 router.use("/v1/api/inventory", require("./inventory/inventoryRouter"));
 router.use("/v1/api/checkout", require("./checkout/checkoutRouter"));
 router.use("/v1/api/cart", require("./cart/cartRouter"));

@@ -3,7 +3,7 @@ const mongoose = require("mongoose"); // Erase if already required
 const COLLECTION_NAME = "inventories";
 const DOCUMENT_NAME = "inventoryModel";
 // Declare the Schema of the Mongo model
-var inventorySchema = new mongoose.Schema(
+const inventorySchema = new mongoose.Schema(
   {
     inven_productId: {
       type: mongoose.Schema.Types.ObjectId,

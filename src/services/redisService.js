@@ -1,33 +1,27 @@
 "use strict";
-const redis = require("redis");
 const { promisify } = require("util");
+const redis = require("redis");
 const { reservationInventory } = require("../repositories/inventoryRepo");
-const redisClient = redis.createClient({ url: process.env.REDIS_URL });
+// const redisClient = redis.createClient({ url: process.env.REDIS_URL });
 
-redisClient.on("error", (err) => console.log("Redis Client Error", err));
+// redisClient.on("error", (err) => console.log("Redis Client Error", err));
+// redisClient.on("connect", (con) => console.log("Redis connect", con));
+// console.log("🚀 ~ redisClient 6:", redisClient);
 
-redisClient.connect();
+// redisClient.connect();
+
+const { getRedis } = require("../dbs/initRedis");
+const { instanceConnect: redisClient } = getRedis();
 
 const pexpire = promisify(redisClient.pExpire).bind(redisClient);
 const setnxAsync = promisify(redisClient.setNX).bind(redisClient);
 
 const setRedis = async () => {
   console.log("🚀 ~ setRedis ~ setRedis:");
-  await redisClient.set("key", "value");
+  await redisClient.set("key2", "value2");
   const value = await redisClient.get("key");
   console.log("🚀 ~ setRedis ~ value:", value);
 };
-
-// redisClient.ping((err, result) => {
-//   if (err) {
-//     console.log(" ~ redisClient.ping ~ err:", err);
-//   } else {
-//     console.log(" ~ redisClient.ping ~ result:", result);
-//   }
-// });
-
-// const pexpire = promisify(redisClient.pexpire).bind(redisClient);
-// const setnxAsync = promisify(redisClient.setnx).bind(redisClient);
 
 const acquireLock = async (productId, quantity, cartId) => {
   const key = `lock_v2022_${productId}`;

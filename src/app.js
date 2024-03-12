@@ -3,28 +3,33 @@ require("dotenv").config();
 const morgan = require("morgan");
 const { default: helmet } = require("helmet");
 const compression = require("compression");
-var cors = require("cors");
+const cors = require("cors");
 
 const { checkOverload } = require("./helpers");
 
 const app = express();
 
 // init middleware
+// app.use(morgan("combined"));
+
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
+
+app.use(compression());
+// init database
+require("./dbs/initMongo");
+const initRedis = require("./dbs/initRedis");
+initRedis.initRedis();
+// checkOverload();
+
 // Test pub sub
 // require("../src/tests/inventoryTest");
 // const productTest = require("../src/tests/productTest");
 // productTest.purchaseProduct("product:001", 10);
-// app.use(morgan("combined"));
+
 app.use(helmet());
-app.use(compression());
-// init database
-require("./dbs/initMongo");
-// require("./dbs/initRedis");
-// checkOverload();
 
 // init routes
 app.use("", require("./routes"));

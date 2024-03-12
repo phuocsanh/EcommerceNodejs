@@ -10,7 +10,7 @@ const DOCUMENT_NAME_ELECTRONIC = "electronicModel";
 const COLLECTION_NAME_FURNITURE = "furnitures";
 const DOCUMENT_NAME_FURNITURE = "furnitureModel";
 // Declare the Schema of the Mongo model
-var productSchema = new mongoose.Schema(
+const productSchema = new mongoose.Schema(
   {
     product_name: {
       type: String,
@@ -64,7 +64,7 @@ productSchema.pre("save", function (next) {
   this.product_slug = slugify(this.product_name, { lower: true });
   next();
 });
-var clothingSchema = new mongoose.Schema(
+const clothingSchema = new mongoose.Schema(
   {
     product_shop: {
       type: mongoose.Schema.Types.ObjectId,
@@ -90,7 +90,7 @@ var clothingSchema = new mongoose.Schema(
     collection: COLLECTION_NAME_CLOTHING,
   }
 );
-var electronicSchema = new mongoose.Schema(
+const electronicSchema = new mongoose.Schema(
   {
     product_shop: {
       type: mongoose.Schema.Types.ObjectId,
@@ -117,7 +117,7 @@ var electronicSchema = new mongoose.Schema(
   }
 );
 
-var furnitureSchema = new mongoose.Schema(
+const furnitureSchema = new mongoose.Schema(
   {
     brand: {
       type: String,
