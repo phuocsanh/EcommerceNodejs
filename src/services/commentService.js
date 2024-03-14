@@ -7,17 +7,17 @@ const commentModel = require("../models/commentModel");
 const { mongoObjectId } = require("../utils");
 
 class CommentService {
-  static async createComment({ productId, userId, content, parentCommentId }) {
+  static async createComment({ productId, userId, content, commentparentId }) {
     const comment = new commentModel({
       commemt_productId: productId,
       comment_userId: userId,
       comment_content: content,
-      comment_parentId: parentCommentId,
+      comment_parentId: commentparentId,
     });
     let rightValue;
-    if (parentCommentId) {
+    if (commentparentId) {
       //reply comment
-      const parentComment = await commentModel.findById(parentCommentId);
+      const parentComment = await commentModel.findById(commentparentId);
       if (!parentComment) throw new NotFoundError("Parent comment not found");
       rightValue = parentComment.comment_right;
       // update many
