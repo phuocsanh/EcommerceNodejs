@@ -4,6 +4,7 @@ const {
   BadRequestError,
 } = require("../../src/helpers/errorResponse");
 const commentModel = require("../models/commentModel");
+const { findProduct } = require("../repositories/productRepo");
 const { mongoObjectId } = require("../utils");
 
 class CommentService {
@@ -59,6 +60,80 @@ class CommentService {
     comment.comment_right = rightValue + 1;
     await comment.save();
     return comment;
+  }
+  static async getCommentsByParentId({
+    productId,
+    parentCommentId = null,
+    limit = 50,
+    offset = 0,
+  }) {
+    if (parentCommentId) {
+      const parent = await commentModel.findById(parentCommentId);
+      if (!parent) throw new NotFoundError("Not found comment for product");
+      const comments = await commentModel
+        .find({
+          commemt_productId: mongoObjectId(productId),
+          comment_left: { $gt: parent.comment_left },
+          comment_right: { $lte: parent.comment_right },
+        })
+        .select({
+          comment_left: 1,
+          comment_right: 1,
+          comment_content: 1,
+          comment_parentId: 1,
+        })
+        .sort({ comment_left: 1 });
+      return comments;
+    }
+    const comments = await commentModel
+      .find({
+        commemt_productId: mongoObjectId(productId),
+        commemt_parentId: parentCommentId,
+      })
+      .select({
+        comment_left: 1,
+        comment_right: 1,
+        comment_content: 1,
+        comment_parentId: 1,
+      })
+      .sort({ comment_left: 1 });
+    return comments;
+  }
+  static async deleteComment({ productId, commentId }) {
+    const foundProduct = await findProduct({ propduct_id: productId });
+    if (!foundProduct) throw new NotFoundError("product not found");
+    const comment = await commentModel.findById(commentId);
+    if (!comment) throw new NotFoundError("comment not found");
+
+    const leftValue = comment.comment_left;
+    const rightValue = comment.comment_right;
+    // Tính width
+    const width = rightValue - leftValue + 1;
+    // Xoá tất cả commentId con
+    await commentModel.deleteMany({
+      comment_productId: mongoObjectId(productId),
+      comnent_content: { $gte: leftValue, $lte: rightValue },
+    });
+    // cập nhật giá trị left và right còn lại
+    await commentModel.updateMany(
+      {
+        comment_productId: mongoObjectId(productId),
+        comnent_right: { $gt: rightValue, $lte: rightValue },
+      },
+      {
+        $inc: { comment_right: -width },
+      }
+    );
+    await commentModel.updateMany(
+      {
+        comment_productId: mongoObjectId(productId),
+        comnent_left: { $gt: rightValue, $lte: rightValue },
+      },
+      {
+        $inc: { comment_right: -width },
+      }
+    );
+    return true;
   }
 }
 module.exports = CommentService;

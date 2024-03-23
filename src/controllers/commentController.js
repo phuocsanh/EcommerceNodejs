@@ -4,8 +4,15 @@ const CommentController = {
   async createComment(req, res, next) {
     SendResponseSuccess({
       res,
-      message: "Add comment succsessfully",
+      message: "Add comment",
       metadata: await CommentService.createComment(req.body),
+    });
+  },
+  async getCommentsParentId(req, res, next) {
+    SendResponseSuccess({
+      res,
+      message: "Get comment",
+      metadata: await CommentService.getCommentsByParentId(req.query),
     });
   },
 };
