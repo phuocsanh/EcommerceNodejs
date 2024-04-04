@@ -10,7 +10,7 @@ const { mongoObjectId } = require("../utils");
 class CommentService {
   static async createComment({ productId, userId, content, commentparentId }) {
     const comment = new commentModel({
-      commemt_productId: productId,
+      comment_productId: productId,
       comment_userId: userId,
       comment_content: content,
       comment_parentId: commentparentId,
@@ -24,7 +24,7 @@ class CommentService {
       // update many
       await commentModel.updateMany(
         {
-          commemt_productId: mongoObjectId(productId),
+          comment_productId: mongoObjectId(productId),
           comment_right: { $gte: rightValue },
         },
         {
@@ -33,7 +33,7 @@ class CommentService {
       );
       await commentModel.updateMany(
         {
-          commemt_productId: mongoObjectId(productId),
+          comment_productId: mongoObjectId(productId),
           comment_left: { $gt: rightValue },
         },
         {
@@ -43,7 +43,7 @@ class CommentService {
     } else {
       const maxRightValue = await commentModel.findOne(
         {
-          commemt_productId: mongoObjectId(productId),
+          comment_productId: mongoObjectId(productId),
         },
         "comment_right",
         { sort: { comment_right: -1 } }
@@ -72,7 +72,7 @@ class CommentService {
       if (!parent) throw new NotFoundError("Not found comment for product");
       const comments = await commentModel
         .find({
-          commemt_productId: mongoObjectId(productId),
+          comment_productId: mongoObjectId(productId),
           comment_left: { $gt: parent.comment_left },
           comment_right: { $lte: parent.comment_right },
         })
@@ -87,8 +87,8 @@ class CommentService {
     }
     const comments = await commentModel
       .find({
-        commemt_productId: mongoObjectId(productId),
-        commemt_parentId: parentCommentId,
+        comment_productId: mongoObjectId(productId),
+        comment_parentId: parentCommentId,
       })
       .select({
         comment_left: 1,
@@ -100,7 +100,7 @@ class CommentService {
     return comments;
   }
   static async deleteComment({ productId, commentId }) {
-    const foundProduct = await findProduct({ propduct_id: productId });
+    const foundProduct = await findProduct({ product_id: productId });
     if (!foundProduct) throw new NotFoundError("product not found");
     const comment = await commentModel.findById(commentId);
     if (!comment) throw new NotFoundError("comment not found");
@@ -112,13 +112,13 @@ class CommentService {
     // Xoá tất cả commentId con
     await commentModel.deleteMany({
       comment_productId: mongoObjectId(productId),
-      comnent_content: { $gte: leftValue, $lte: rightValue },
+      comment_left: { $gte: leftValue, $lte: rightValue },
     });
     // cập nhật giá trị left và right còn lại
     await commentModel.updateMany(
       {
         comment_productId: mongoObjectId(productId),
-        comnent_right: { $gt: rightValue, $lte: rightValue },
+        comment_right: { $gt: rightValue },
       },
       {
         $inc: { comment_right: -width },
@@ -127,10 +127,10 @@ class CommentService {
     await commentModel.updateMany(
       {
         comment_productId: mongoObjectId(productId),
-        comnent_left: { $gt: rightValue, $lte: rightValue },
+        comment_left: { $gt: rightValue },
       },
       {
-        $inc: { comment_right: -width },
+        $inc: { comment_left: -width },
       }
     );
     return true;

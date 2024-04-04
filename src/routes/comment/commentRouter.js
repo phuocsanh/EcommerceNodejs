@@ -7,5 +7,6 @@ const router = express.Router();
 router.use(authentication);
 router.post("", asyncHandleError(commentController.createComment));
 router.get("", asyncHandleError(commentController.getCommentsParentId));
+router.delete("", asyncHandleError(commentController.deleteComment));
 
 module.exports = router;

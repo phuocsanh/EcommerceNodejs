@@ -5,7 +5,7 @@ const DOCUMENT_NAME = "commentModel";
 // Declare the Schema of the Mongo model
 const commentSchema = new mongoose.Schema(
   {
-    commemt_productId: {
+    comment_productId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "productModel",
     },

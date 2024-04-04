@@ -8,6 +8,13 @@ const CommentController = {
       metadata: await CommentService.createComment(req.body),
     });
   },
+  async deleteComment(req, res, next) {
+    SendResponseSuccess({
+      res,
+      message: "delete comment",
+      metadata: await CommentService.deleteComment(req.body),
+    });
+  },
   async getCommentsParentId(req, res, next) {
     SendResponseSuccess({
       res,
