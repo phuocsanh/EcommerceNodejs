@@ -20,8 +20,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(compression());
 // init database
 require("./dbs/initMongo");
-const initRedis = require("./dbs/initRedis");
-initRedis.initRedis();
+// const initRedis = require("./dbs/initRedis");
+// initRedis.initRedis();
 // checkOverload();
 
 // Test pub sub

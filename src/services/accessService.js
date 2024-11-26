@@ -4,8 +4,11 @@ const shopModel = require("../models/shopModel");
 const bcrypt = require("bcrypt");
 const crypto = require("node:crypto");
 const KeyTokenService = require("./keyTokenService");
-const { createTokenPair, getDataByFields } = require("../utils");
-const { SendErrorResponse } = require("../helpers");
+const {
+  createTokenPair,
+  getDataByFields,
+  generateSixDigitOtp,
+} = require("../utils");
 const {
   BadRequestError,
   ForbiddenError,
@@ -14,6 +17,7 @@ const {
 const shopService = require("./shopService");
 const { verifyJWT } = require("../middlewares/checkAuth");
 const { findShopByEmail } = require("./shopService");
+const sendTextEmailOtp = require("../utils/sendmail");
 
 const rolesShop = {
   SHOP: "SHOP",
@@ -90,11 +94,16 @@ const accessService = {
     };
   },
 
-  async signUp({ name, email, password }) {
+  async signUp({ email }) {
     const shop = await shopModel.findOne({ email }).lean();
     if (shop) {
       throw new BadRequestError("Email address is already");
     }
+    const otp = generateSixDigitOtp();
+    const res = await sendTextEmailOtp(email, otp);
+    console.log("🚀 ~ signUp ~ res:", res);
+  },
+  async verifyOTPAndCreateUser(name, email, password) {
     const passwordHash = await bcrypt.hash(password, 10);
     const newShop = await shopModel.create({
       name,

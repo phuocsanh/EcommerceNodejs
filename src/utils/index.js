@@ -2,9 +2,14 @@
 const JWT = require("jsonwebtoken");
 const lodash = require("lodash");
 const { Types } = require("mongoose");
+const crypto = require("crypto");
 
 const mongoObjectId = (id) => {
   return new Types.ObjectId(id);
+};
+
+const generateSixDigitOtp = () => {
+  return crypto.randomInt(100000, 1000000); // Tạo số ngẫu nhiên từ 100000 đến 999999
 };
 
 const createTokenPair = (payload, publicKey, privateKey) => {
@@ -76,6 +81,7 @@ const updateNestedObjectParser = (objParams) => {
 };
 
 module.exports = {
+  generateSixDigitOtp,
   createTokenPair,
   getDataByFields,
   mongoObjectId,
