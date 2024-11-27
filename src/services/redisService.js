@@ -7,6 +7,8 @@ const { instanceConnect: redisClient } = getRedis();
 
 const pexpire = promisify(redisClient.pExpire).bind(redisClient);
 const setnxAsync = promisify(redisClient.setNX).bind(redisClient);
+const setAsyncRedis = promisify(redisClient.set).bind(redisClient);
+const getAsyncRedis = promisify(redisClient.get).bind(redisClient);
 
 const setRedis = async () => {
   console.log("🚀 ~ setRedis ~ setRedis:");
@@ -47,7 +49,6 @@ module.exports = {
   acquireLock,
   releaseLock,
   setRedis,
-  getAsyncRedis: (key) => redisClient.get(key),
-  setAsyncRedis: (key, value, options = {}) =>
-    redisClient.set(key, value, options),
+  getAsyncRedis,
+  setAsyncRedis,
 };

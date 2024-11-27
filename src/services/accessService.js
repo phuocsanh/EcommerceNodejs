@@ -104,7 +104,8 @@ const accessService = {
     const hashKey = getHash(email.toLowerCase());
     console.log("Hashed key:", hashKey);
     const otp = generateSixDigitOtp();
-    const data = await setAsyncRedis(userKey, 60 * 5, otpNew.toString());
+    const data = await setAsyncRedis(hashKey, 60 * 5, otp.toString());
+    console.log("🚀 ~ registerEmail ~ data:", data);
 
     const res = await sendTextEmailOtp(email, otp);
     if (!res.success) {
