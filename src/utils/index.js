@@ -8,6 +8,17 @@ const mongoObjectId = (id) => {
   return new Types.ObjectId(id);
 };
 
+function getHash(key) {
+  const hash = crypto.createHash("sha256");
+  hash.update(key);
+  return hash.digest("hex");
+}
+
+// Hàm tạo key Redis
+function getUserKey(hashKey) {
+  return `u:${hashKey}:otp`;
+}
+
 const generateSixDigitOtp = () => {
   return crypto.randomInt(100000, 1000000); // Tạo số ngẫu nhiên từ 100000 đến 999999
 };
@@ -81,6 +92,8 @@ const updateNestedObjectParser = (objParams) => {
 };
 
 module.exports = {
+  getUserKey,
+  getHash,
   generateSixDigitOtp,
   createTokenPair,
   getDataByFields,

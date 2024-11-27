@@ -4,7 +4,10 @@ const accessController = require("../../controllers/accessController");
 const { asyncHandleError, authentication } = require("../../helpers");
 const router = express.Router();
 // signup
-router.post("/signup", asyncHandleError(accessController.signUp));
+router.post(
+  "/register-email",
+  asyncHandleError(accessController.registerEmail)
+);
 //login
 router.post("/login", asyncHandleError(accessController.login));
 // authentication

@@ -30,11 +30,11 @@ const accessController = {
       metadata: await accessService.login(req.body),
     });
   },
-  async signUp(req, res, next) {
+  async registerEmail(req, res, next) {
     SendResponseCreate({
       res,
       message: "Register successfully",
-      metadata: await accessService.signUp(req.body),
+      metadata: await accessService.registerEmail(req.body),
     });
   },
 };

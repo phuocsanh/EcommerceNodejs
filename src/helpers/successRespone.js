@@ -11,12 +11,12 @@ const SendResponseSuccess = ({
   res,
   headers,
   message = REASEON_STATUS_CODE.OK,
-  status = STATUS_CODE.OK,
+  code = STATUS_CODE.OK,
   metadata = null,
 }) => {
-  return res.status(status).json({
+  return res.status(code).json({
     message,
-    status,
+    code,
     metadata,
   });
 };
@@ -24,12 +24,12 @@ const SendResponseCreate = ({
   res,
   headers,
   message = REASEON_STATUS_CODE.CREATE,
-  status = STATUS_CODE.CREATE,
+  code = STATUS_CODE.CREATE,
   metadata = null,
 }) => {
-  return res.status(status).json({
+  return res.status(code).json({
     message,
-    status,
+    code,
     metadata,
   });
 };

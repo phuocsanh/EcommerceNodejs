@@ -7,6 +7,7 @@ const KeyTokenService = require("./keyTokenService");
 const {
   createTokenPair,
   getDataByFields,
+  getHash,
   generateSixDigitOtp,
 } = require("../utils");
 const {
@@ -18,6 +19,7 @@ const shopService = require("./shopService");
 const { verifyJWT } = require("../middlewares/checkAuth");
 const { findShopByEmail } = require("./shopService");
 const sendTextEmailOtp = require("../utils/sendmail");
+const { setAsyncRedis } = require("./redisService");
 
 const rolesShop = {
   SHOP: "SHOP",
@@ -94,14 +96,20 @@ const accessService = {
     };
   },
 
-  async signUp({ email }) {
+  async registerEmail({ email }) {
     const shop = await shopModel.findOne({ email }).lean();
     if (shop) {
       throw new BadRequestError("Email address is already");
     }
+    const hashKey = getHash(email.toLowerCase());
+    console.log("Hashed key:", hashKey);
     const otp = generateSixDigitOtp();
+    const data = await setAsyncRedis(userKey, 60 * 5, otpNew.toString());
+
     const res = await sendTextEmailOtp(email, otp);
-    console.log("🚀 ~ signUp ~ res:", res);
+    if (!res.success) {
+      throw new BadRequestError("Send mail failed");
+    }
   },
   async verifyOTPAndCreateUser(name, email, password) {
     const passwordHash = await bcrypt.hash(password, 10);
