@@ -7,7 +7,7 @@ const DiscountController = {
     SendResponseSuccess({
       res,
       message: "create discount code succsess",
-      metadata: await DiscountService.createDiscountCode({
+      data: await DiscountService.createDiscountCode({
         ...req.body,
         shopId: req.user.userId,
       }),
@@ -17,7 +17,7 @@ const DiscountController = {
     SendResponseSuccess({
       res,
       message: "succsess",
-      metadata: await DiscountService.getAllDiscountCodeByShop({
+      data: await DiscountService.getAllDiscountCodeByShop({
         ...req.query,
         shopId: req.user.userId,
       }),
@@ -27,7 +27,7 @@ const DiscountController = {
     SendResponseSuccess({
       res,
       message: "succsess",
-      metadata: await DiscountService.getDiscountAmount({
+      data: await DiscountService.getDiscountAmount({
         ...req.body,
       }),
     });
@@ -36,7 +36,7 @@ const DiscountController = {
     SendResponseSuccess({
       res,
       message: "succsess",
-      metadata: await DiscountService.getAllDiscountCodeWithProduct({
+      data: await DiscountService.getAllDiscountCodeWithProduct({
         ...req.query,
       }),
     });

@@ -5,21 +5,21 @@ const CommentController = {
     SendResponseSuccess({
       res,
       message: "Add comment",
-      metadata: await CommentService.createComment(req.body),
+      data: await CommentService.createComment(req.body),
     });
   },
   async deleteComment(req, res, next) {
     SendResponseSuccess({
       res,
       message: "delete comment",
-      metadata: await CommentService.deleteComment(req.body),
+      data: await CommentService.deleteComment(req.body),
     });
   },
   async getCommentsParentId(req, res, next) {
     SendResponseSuccess({
       res,
       message: "Get comment",
-      metadata: await CommentService.getCommentsByParentId(req.query),
+      data: await CommentService.getCommentsByParentId(req.query),
     });
   },
 };

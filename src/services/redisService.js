@@ -5,10 +5,10 @@ const { reservationInventory } = require("../repositories/inventoryRepo");
 const { getRedis } = require("../dbs/initRedis");
 const { instanceConnect: redisClient } = getRedis();
 
-const pexpire = promisify(redisClient.pExpire).bind(redisClient);
-const setnxAsync = promisify(redisClient.setNX).bind(redisClient);
-const setAsyncRedis = promisify(redisClient.set).bind(redisClient);
-const getAsyncRedis = promisify(redisClient.get).bind(redisClient);
+const pexpire = redisClient.pExpire.bind(redisClient);
+const setnxAsync = redisClient.setNX.bind(redisClient);
+const setAsyncRedis = redisClient.set.bind(redisClient);
+const getAsyncRedis = redisClient.get.bind(redisClient);
 
 const setRedis = async () => {
   console.log("🚀 ~ setRedis ~ setRedis:");

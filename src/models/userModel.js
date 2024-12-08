@@ -1,9 +1,9 @@
 "use strict";
 const mongoose = require("mongoose"); // Erase if already required
-const COLLECTION_NAME = "shops";
-const DOCUMENT_NAME = "shopModel";
+const COLLECTION_NAME = "users";
+const DOCUMENT_NAME = "userModel";
 // Declare the Schema of the Mongo model
-const shopSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -25,12 +25,9 @@ const shopSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["active", "inactive"],
-      default: "inactive",
+      default: "active",
     },
-    verify: {
-      type: mongoose.Schema.Types.Boolean,
-      // required: true,
-    },
+
     roles: {
       type: Array,
       default: [],
@@ -43,4 +40,4 @@ const shopSchema = new mongoose.Schema(
 );
 
 //Export the model
-module.exports = mongoose.model(DOCUMENT_NAME, shopSchema);
+module.exports = mongoose.model(DOCUMENT_NAME, userSchema);

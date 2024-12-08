@@ -6,7 +6,7 @@ const InventoryController = {
     SendResponseSuccess({
       res,
       message: "Create new inventory successfully",
-      metadata: await InventoryService.addStockToInventory(req.body),
+      data: await InventoryService.addStockToInventory(req.body),
     });
   },
 };

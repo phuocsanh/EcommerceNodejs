@@ -4,36 +4,34 @@ const apiKeyModel = require("../models/apiKeyModel");
 const { findApiKeyById } = require("../services/apiKeyService");
 const JWT = require("jsonwebtoken");
 
-const crypto = require("node:crypto");
-
 const HEADER = {
-  API_KEY: "x-api-key",
+  // API_KEY: "x-api-key",
   CLIENT_ID: "x-client-id",
   AUTHORIZATION: "authorization",
   REFRESHTOKEN: "x-rtoken-id",
 };
 
-const apiKey = async (req, res, next) => {
-  try {
-    // const newKey = await apiKeyModel.create({
-    //   key: crypto.randomBytes(64).toString("hex"),
-    //   permissions: ["0000"],
-    // });
+// const apiKey = async (req, res, next) => {
+//   try {
+//     // const newKey = await apiKeyModel.create({
+//     //   key: crypto.randomBytes(64).toString("hex"),
+//     //   permissions: ["0000"],
+//     // });
 
-    const key = req.headers[HEADER.API_KEY]?.toString();
-    if (!key) {
-      return res.status(403).json({ message: "Forbidden key" });
-    }
-    const objKey = await findApiKeyById(key);
-    if (!objKey) {
-      return res.status(403).json({ message: "Forbidden key obj" });
-    }
-    req.objKey = objKey;
-    return next();
-  } catch (error) {
-    return res.status(400).json({ message: error.message });
-  }
-};
+//     const key = req.headers[HEADER.API_KEY]?.toString();
+//     if (!key) {
+//       return res.status(403).json({ message: "Forbidden key" });
+//     }
+//     const objKey = await findApiKeyById(key);
+//     if (!objKey) {
+//       return res.status(403).json({ message: "Forbidden key obj" });
+//     }
+//     req.objKey = objKey;
+//     return next();
+//   } catch (error) {
+//     return res.status(400).json({ message: error.message });
+//   }
+// };
 
 const chekPermission = (permission) => {
   return async (req, res, next) => {
@@ -55,4 +53,4 @@ const verifyJWT = async (token, keySecret) => {
   return await JWT.verify(token, keySecret);
 };
 
-module.exports = { apiKey, chekPermission, HEADER, verifyJWT };
+module.exports = { chekPermission, HEADER, verifyJWT };

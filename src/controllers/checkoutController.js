@@ -7,14 +7,14 @@ const CheckoutController = {
     SendResponseSuccess({
       res,
       message: "testRedisService",
-      metadata: await setRedis(req.body),
+      data: await setRedis(req.body),
     });
   },
   async checkoutReview(req, res, next) {
     SendResponseSuccess({
       res,
       message: "checkout review succsess",
-      metadata: await CheckoutService.checkoutReview(req.body),
+      data: await CheckoutService.checkoutReview(req.body),
     });
   },
 };

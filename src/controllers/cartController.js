@@ -6,28 +6,28 @@ const CartController = {
     SendResponseSuccess({
       res,
       message: "create new cart succsess",
-      metadata: await CartService.addToCart(req.body),
+      data: await CartService.addToCart(req.body),
     });
   },
   async update(req, res, next) {
     SendResponseSuccess({
       res,
       message: "updated cart succsess",
-      metadata: await CartService.addToCartV2(req.body),
+      data: await CartService.addToCartV2(req.body),
     });
   },
   async delete(req, res, next) {
     SendResponseSuccess({
       res,
       message: "deleted cart succsess",
-      metadata: await CartService.deleteUserCart(req.body),
+      data: await CartService.deleteUserCart(req.body),
     });
   },
   async listToCart(req, res, next) {
     SendResponseSuccess({
       res,
       message: "get list succsess",
-      metadata: await CartService.getListUserCart(req.query.userId),
+      data: await CartService.getListUserCart(req.query.userId),
     });
   },
 };

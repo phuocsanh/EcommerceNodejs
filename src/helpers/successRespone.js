@@ -1,7 +1,7 @@
 "use strict";
 const STATUS_CODE = {
   OK: 200,
-  CREATE: 201,
+  CREATE: 200,
 };
 const REASEON_STATUS_CODE = {
   OK: "Success",
@@ -12,12 +12,12 @@ const SendResponseSuccess = ({
   headers,
   message = REASEON_STATUS_CODE.OK,
   code = STATUS_CODE.OK,
-  metadata = null,
+  data = null,
 }) => {
   return res.status(code).json({
     message,
     code,
-    metadata,
+    data,
   });
 };
 const SendResponseCreate = ({
@@ -25,12 +25,12 @@ const SendResponseCreate = ({
   headers,
   message = REASEON_STATUS_CODE.CREATE,
   code = STATUS_CODE.CREATE,
-  metadata = null,
+  data = null,
 }) => {
   return res.status(code).json({
     message,
     code,
-    metadata,
+    data,
   });
 };
 

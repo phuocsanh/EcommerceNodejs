@@ -6,10 +6,12 @@ const {
 const accessService = require("../services/accessService");
 const accessController = {
   async handleRefreshToken(req, res, next) {
+    console.log("🚀 ~ handleRefreshToken ~ req.user:", req.keyStore);
+
     SendResponseSuccess({
       res,
       message: "Get token success",
-      metadata: await accessService.handleRefreshToken({
+      data: await accessService.handleRefreshToken({
         refreshToken: req.refreshToken,
         user: req.user,
         keyStore: req.keyStore,
@@ -20,21 +22,35 @@ const accessController = {
     SendResponseSuccess({
       res,
       message: "Logout successfully",
-      metadata: await accessService.logout(req.keyStore),
+      data: await accessService.logout(req.keyStore),
     });
   },
   async login(req, res, next) {
     SendResponseSuccess({
       res,
       message: "Login successfully",
-      metadata: await accessService.login(req.body),
+      data: await accessService.login(req.body),
     });
   },
   async registerEmail(req, res, next) {
     SendResponseCreate({
       res,
       message: "Register successfully",
-      metadata: await accessService.registerEmail(req.body),
+      data: await accessService.registerEmail(req.body),
+    });
+  },
+  async verifyOTP(req, res, next) {
+    SendResponseSuccess({
+      res,
+      message: "Verify otp successfully",
+      data: await accessService.verifyOTP(req.body),
+    });
+  },
+  async updatePasswordRegister(req, res, next) {
+    SendResponseCreate({
+      res,
+      message: "Create shop successfully",
+      data: await accessService.updatePasswordRegister(req.body),
     });
   },
 };

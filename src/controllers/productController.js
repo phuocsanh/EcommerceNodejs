@@ -8,7 +8,7 @@ const ProductController = {
     SendResponseSuccess({
       res,
       message: "Update product successfully",
-      metadata: await ProductFactory.updateProduct(
+      data: await ProductFactory.updateProduct(
         req.body.product_type,
         req.params.productId,
         {
@@ -22,7 +22,7 @@ const ProductController = {
     SendResponseCreate({
       res,
       message: "Create new product successfully",
-      metadata: await ProductFactory.createProduct(req.body.product_type, {
+      data: await ProductFactory.createProduct(req.body.product_type, {
         ...req.body,
         product_shop: req.user.userId,
       }),
@@ -32,7 +32,7 @@ const ProductController = {
     SendResponseCreate({
       res,
       message: "Update unpublish product successfully",
-      metadata: await ProductFactory.unPublishProductByShop({
+      data: await ProductFactory.unPublishProductByShop({
         product_id: req.params.id,
         product_shop: req.user.userId,
       }),
@@ -42,7 +42,7 @@ const ProductController = {
     SendResponseCreate({
       res,
       message: "Update product successfully",
-      metadata: await ProductFactory.publishProductByShop({
+      data: await ProductFactory.publishProductByShop({
         product_id: req.params.id,
         product_shop: req.user.userId,
       }),
@@ -59,7 +59,7 @@ const ProductController = {
     SendResponseSuccess({
       res,
       message: "Get list Draft successfully",
-      metadata: await ProductFactory.findAllDraftsForShop({
+      data: await ProductFactory.findAllDraftsForShop({
         product_shop: req.user.userId,
       }),
     });
@@ -68,7 +68,7 @@ const ProductController = {
     SendResponseSuccess({
       res,
       message: "Get list Publish successfully",
-      metadata: await ProductFactory.findAllPublishForShop({
+      data: await ProductFactory.findAllPublishForShop({
         product_shop: req.user.userId,
       }),
     });
@@ -77,21 +77,21 @@ const ProductController = {
     SendResponseSuccess({
       res,
       message: "Get list search prodcuct successfully",
-      metadata: await ProductFactory.searchProducts(req.params),
+      data: await ProductFactory.searchProducts(req.params),
     });
   },
   async findAllProducts(req, res, next) {
     SendResponseSuccess({
       res,
       message: "Get all prodcuct successfully",
-      metadata: await ProductFactory.findAllProducts(req.query),
+      data: await ProductFactory.findAllProducts(req.query),
     });
   },
   async findProduct(req, res, next) {
     SendResponseSuccess({
       res,
       message: "Find prodcuct successfully",
-      metadata: await ProductFactory.findProduct({
+      data: await ProductFactory.findProduct({
         product_id: req.params.product_id,
       }),
     });
