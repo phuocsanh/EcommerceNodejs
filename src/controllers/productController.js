@@ -119,6 +119,11 @@ const ProductController = {
       product_shop: req.body.product_shop,
       product_name: faker.commerce.productName(),
       product_description: faker.commerce.productDescription(),
+      product_ratingsAverage: faker.number.float({
+        multipleOf: 0.5,
+        min: 1,
+        max: 5,
+      }),
       product_price: faker.number.int({ min: 100000, max: 5000000 }),
       product_type: req.body.product_type,
       product_thumb: req.body.product_thumb || "",

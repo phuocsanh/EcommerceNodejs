@@ -81,6 +81,10 @@ class ProductFactory {
   }
 
   static async findAllOrTypePublishProduct({ page, limit, product_type }) {
+    console.log(
+      "🚀 ~ ProductFactory ~ findAllOrTypePublishProduct ~ page:",
+      page
+    );
     // Xây dựng điều kiện tìm kiếm
     const query = {};
     if (product_type) {
