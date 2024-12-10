@@ -57,6 +57,7 @@ const findProduct = async ({ product_id, unSelect }) => {
 const findAllPublishForShop = async ({ query, limit, skip }) => {
   return await queryProduct({ query, limit, skip });
 };
+
 const searchProductByUser = async ({ keySearch }) => {
   const regexSearch = new RegExp(keySearch);
 

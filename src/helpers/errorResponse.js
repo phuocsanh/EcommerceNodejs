@@ -31,6 +31,7 @@ class BadRequestError extends ErrorResponse {
     super(message, status);
   }
 }
+
 class AuthFailureError extends ErrorResponse {
   constructor(
     message = ReasonPhrases.UNAUTHORIZED,

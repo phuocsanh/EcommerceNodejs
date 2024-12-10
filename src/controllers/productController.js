@@ -3,6 +3,11 @@ const {
   SendResponseCreate,
   SendResponseSuccess,
 } = require("../helpers/successRespone");
+const instanceMongoDb = require("../dbs/initMongo");
+const { BadRequestError } = require("../helpers/errorResponse");
+const { faker } = require("@faker-js/faker");
+const { productModel } = require("../models/productModel");
+
 const ProductController = {
   async updateProduct(req, res, next) {
     SendResponseSuccess({
@@ -87,6 +92,13 @@ const ProductController = {
       data: await ProductFactory.findAllProducts(req.query),
     });
   },
+  async findAllOrTypePublishProduct(req, res, next) {
+    SendResponseSuccess({
+      res,
+      message: "Get  prodcuct successfully",
+      data: await ProductFactory.findAllOrTypePublishProduct(req.query),
+    });
+  },
   async findProduct(req, res, next) {
     SendResponseSuccess({
       res,
@@ -94,6 +106,41 @@ const ProductController = {
       data: await ProductFactory.findProduct({
         product_id: req.params.product_id,
       }),
+    });
+  },
+  async insertFakedProduct(req, res, next) {
+    if (!req.body.product_type) {
+      throw new BadRequestError("Not product_type!");
+    }
+    if (!req.body.product_shop) {
+      throw new BadRequestError("Not product_shop!");
+    }
+    const products = Array.from({ length: req.body.quantity || 10 }, () => ({
+      product_shop: req.body.product_shop,
+      product_name: faker.commerce.productName(),
+      product_description: faker.commerce.productDescription(),
+      product_price: faker.number.int({ min: 100000, max: 5000000 }),
+      product_type: req.body.product_type,
+      product_thumb: req.body.product_thumb || "",
+      product_quantity: faker.number.int({ min: 100, max: 500 }),
+      product_attributes: {
+        brand: faker.company.name(),
+        size: faker.string.fromCharacters(["S", "M", "L", "XL"]),
+        material: faker.commerce.productMaterial(),
+      },
+    }));
+    const insert = await productModel.insertMany(products);
+    if (!insert) {
+      SendResponseSuccess({
+        res,
+        message: "fakeProduct fail",
+        data: [],
+      });
+    }
+    SendResponseSuccess({
+      res,
+      message: "fakeProduct successfully",
+      data: [],
     });
   },
 };

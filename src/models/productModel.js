@@ -6,9 +6,13 @@ const DOCUMENT_NAME_PRODUCT = "productModel";
 const COLLECTION_NAME_CLOTHING = "clothings";
 const DOCUMENT_NAME_CLOTHING = "clothingsModel";
 const COLLECTION_NAME_ELECTRONIC = "electronics";
+const COLLECTION_NAME_WATCH = "watches";
+const COLLECTION_NAME_WALLET_BAG = "walletbags";
 const DOCUMENT_NAME_ELECTRONIC = "electronicModel";
 const COLLECTION_NAME_FURNITURE = "furnitures";
 const DOCUMENT_NAME_FURNITURE = "furnitureModel";
+const DOCUMENT_NAME_WATCH = "watchModel";
+const DOCUMENT_NAME_WALLET_BAG = "wallet_bag_Model";
 // Declare the Schema of the Mongo model
 const productSchema = new mongoose.Schema(
   {
@@ -41,7 +45,7 @@ const productSchema = new mongoose.Schema(
     product_type: {
       type: String,
       required: true,
-      enum: ["Electronic", "Clothing", "Furniture"],
+      enum: ["Electronic", "Clothing", "Furniture", "Wallet_Bag", "Watch"],
     },
     product_shop: {
       type: mongoose.Schema.Types.ObjectId,
@@ -49,8 +53,8 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     product_attributes: { type: mongoose.Schema.Types.Mixed, required: true },
-    isDraft: { type: Boolean, default: true, index: true, select: false },
-    isPublished: { type: Boolean, default: false, index: true, select: false },
+    isDraft: { type: Boolean, default: false, index: true, select: false },
+    isPublished: { type: Boolean, default: true, index: true, select: false },
   },
   {
     timestamps: true,
@@ -144,10 +148,64 @@ const furnitureSchema = new mongoose.Schema(
   }
 );
 
+const watchSchema = new mongoose.Schema(
+  {
+    product_shop: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "shopModel",
+      required: true,
+    },
+    brand: {
+      type: String,
+      trim: true,
+      maxLength: 150,
+    },
+    size: {
+      type: String,
+      trim: true,
+    },
+    material: {
+      type: String,
+      trim: true,
+    },
+  },
+  {
+    timestamps: true,
+    collection: COLLECTION_NAME_WATCH,
+  }
+);
+const wallet_bagSchema = new mongoose.Schema(
+  {
+    product_shop: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "shopModel",
+      required: true,
+    },
+    brand: {
+      type: String,
+      trim: true,
+      maxLength: 150,
+    },
+    size: {
+      type: String,
+      trim: true,
+    },
+    material: {
+      type: String,
+      trim: true,
+    },
+  },
+  {
+    timestamps: true,
+    collection: COLLECTION_NAME_WALLET_BAG,
+  }
+);
 //Export the model
 module.exports = {
   productModel: mongoose.model(DOCUMENT_NAME_PRODUCT, productSchema),
   clothingModel: mongoose.model(DOCUMENT_NAME_CLOTHING, clothingSchema),
   electronicModel: mongoose.model(DOCUMENT_NAME_ELECTRONIC, electronicSchema),
   furnitureModel: mongoose.model(DOCUMENT_NAME_FURNITURE, furnitureSchema),
+  watchModel: mongoose.model(DOCUMENT_NAME_WATCH, watchSchema),
+  walletBagModel: mongoose.model(DOCUMENT_NAME_WALLET_BAG, wallet_bagSchema),
 };

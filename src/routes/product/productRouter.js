@@ -4,13 +4,21 @@ const productController = require("../../controllers/productController");
 const { asyncHandleError, authentication } = require("../../helpers");
 
 const router = express.Router();
-
+router.post(
+  "/insertFakedProduct",
+  asyncHandleError(productController.insertFakedProduct)
+);
+router.get(
+  "/findAllOrTypePublishProduct",
+  asyncHandleError(productController.findAllOrTypePublishProduct)
+);
 router.get(
   "/search/:keySearch",
   asyncHandleError(productController.getlistSearchProduct)
 );
 router.get("", asyncHandleError(productController.findAllProducts));
 router.get("/:product_id", asyncHandleError(productController.findProduct));
+
 // authentication
 router.use(authentication);
 router.patch("/:productId", asyncHandleError(productController.updateProduct));

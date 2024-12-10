@@ -6,7 +6,7 @@ const CategoryController = require("../../controllers/categoriesController");
 const router = express.Router();
 
 router.get(
-  "/get-all-categories",
+  "/getAllCategories",
   asyncHandleError(CategoryController.getAllCategories)
 );
 

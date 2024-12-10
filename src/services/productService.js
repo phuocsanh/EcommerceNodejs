@@ -1,11 +1,17 @@
 "use strict";
-const { BadRequestError } = require("../helpers/errorResponse");
+const {
+  BadRequestError,
+  AuthFailureError,
+} = require("../helpers/errorResponse");
 const {
   productModel,
   clothingModel,
   electronicModel,
   furnitureModel,
+  watchModel,
+  walletBagModel,
 } = require("../models/productModel");
+const userModel = require("../models/userModel");
 const { insertInventory } = require("../repositories/inventoryRepo");
 const {
   findAllDraftsForShop,
@@ -74,6 +80,37 @@ class ProductFactory {
     return await findAllPublishForShop({ query, limit, skip });
   }
 
+  static async findAllOrTypePublishProduct({ page, limit, product_type }) {
+    // Xây dựng điều kiện tìm kiếm
+    const query = {};
+    if (product_type) {
+      query.product_type = product_type; // Tìm theo danh mục
+      query.isPublished = true; // Tìm theo isPublished
+    }
+
+    // Tính toán số lượng dữ liệu cần lấy
+    const skip = (+page - 1) * +limit;
+
+    // Lấy danh sách sản phẩm
+    const products = await productModel
+      .find(query) // Áp dụng điều kiện tìm kiếm
+      .skip(skip) // Bỏ qua số lượng sản phẩm cho phân trang
+      .limit(parseInt(limit)) // Giới hạn số lượng sản phẩm mỗi trang
+      .sort({ createdAt: -1 }) // Sắp xếp theo thời gian tạo mới nhất
+      .select("-isDraft -isPublished"); // Ẩn các trường không cần thiết
+
+    // Đếm tổng số sản phẩm
+    const totalProducts = await productModel.countDocuments(query);
+
+    // Trả về kết quả
+    return {
+      currentPage: +page,
+      totalPages: Math.ceil(totalProducts / limit),
+      totalProducts,
+      data: products,
+    };
+  }
+
   static async searchProducts({ keySearch }) {
     return await searchProductByUser({ keySearch });
   }
@@ -102,6 +139,11 @@ class Product {
   }
   async createProduct(product_id) {
     const data = removeUndefinedObject(this);
+
+    const user = await userModel.findById(this.product_shop);
+    if (!user.roles.includes("SHOP")) {
+      throw new BadRequestError("User not permissions");
+    }
     const newProduct = await productModel.create({ ...data, _id: product_id });
     if (newProduct) {
       await insertInventory({
@@ -214,10 +256,74 @@ class Furniture extends Product {
     return updateProduct;
   }
 }
+class Watch extends Product {
+  async createProduct() {
+    const newWtach = await watchModel.create({
+      ...this.product_attributes,
+      product_shop: this.product_shop,
+    });
+    if (!newWtach) throw new BadRequestError("create watch failed");
+    const newProduct = await super.createProduct(newWtach._id);
+    if (!newProduct) throw new BadRequest("create product failed");
+
+    return newProduct;
+  }
+
+  async updateProduct(productId) {
+    const objectParams = removeUndefinedObject(this);
+
+    if (objectParams.product_attributes) {
+      await updateProductById({
+        productId,
+        bodyUpdate: updateNestedObjectParser(objectParams.product_attributes),
+        model: watchModel,
+      });
+    }
+
+    const updateProduct = await super.updateProduct(
+      productId,
+      updateNestedObjectParser(objectParams)
+    );
+    return updateProduct;
+  }
+}
+class WalletBag extends Product {
+  async createProduct() {
+    const newWalletBag = await walletBagModel.create({
+      ...this.product_attributes,
+      product_shop: this.product_shop,
+    });
+    if (!newWalletBag) throw new BadRequestError("create wallet bag failed");
+    const newProduct = await super.createProduct(newWalletBag._id);
+    if (!newProduct) throw new BadRequest("create product failed");
+
+    return newProduct;
+  }
+
+  async updateProduct(productId) {
+    const objectParams = removeUndefinedObject(this);
+
+    if (objectParams.product_attributes) {
+      await updateProductById({
+        productId,
+        bodyUpdate: updateNestedObjectParser(objectParams.product_attributes),
+        model: walletBagModel,
+      });
+    }
+
+    const updateProduct = await super.updateProduct(
+      productId,
+      updateNestedObjectParser(objectParams)
+    );
+    return updateProduct;
+  }
+}
 
 //register product types
 ProductFactory.registerProductType("Clothing", Clothing);
 ProductFactory.registerProductType("Electronic", Electronic);
 ProductFactory.registerProductType("Furniture", Furniture);
+ProductFactory.registerProductType("WalletBag", WalletBag);
+ProductFactory.registerProductType("Watch", Watch);
 
 module.exports = ProductFactory;

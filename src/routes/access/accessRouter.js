@@ -4,15 +4,12 @@ const accessController = require("../../controllers/accessController");
 const { asyncHandleError, authentication } = require("../../helpers");
 const router = express.Router();
 // signup
+router.post("/registerEmail", asyncHandleError(accessController.registerEmail));
 router.post(
-  "/register-email",
-  asyncHandleError(accessController.registerEmail)
-);
-router.post(
-  "/update_pass_register",
+  "/updatePassRegister",
   asyncHandleError(accessController.updatePasswordRegister)
 );
-router.post("/verify-otp", asyncHandleError(accessController.verifyOTP));
+router.post("/verifyOtp", asyncHandleError(accessController.verifyOTP));
 //login
 router.post("/login", asyncHandleError(accessController.login));
 // authentication
@@ -20,7 +17,7 @@ router.use(authentication);
 //logout
 router.post("/logout", asyncHandleError(accessController.logout));
 router.post(
-  "/handle-refresh-token",
+  "/handleRefreshToken",
   asyncHandleError(accessController.handleRefreshToken)
 );
 

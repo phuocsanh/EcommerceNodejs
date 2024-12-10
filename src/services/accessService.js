@@ -1,6 +1,5 @@
 "use strict";
 const { v4: uuidv4 } = require("uuid");
-const shopModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const crypto = require("node:crypto");
 const KeyTokenService = require("./keyTokenService");

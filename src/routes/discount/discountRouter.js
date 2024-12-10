@@ -10,7 +10,7 @@ router.post(
   asyncHandleError(discountController.getAllDiscountAmount)
 );
 router.get(
-  "/list_product_code",
+  "/listProductCode",
   asyncHandleError(discountController.getAllDiscountCodesWithProduct)
 );
 // authentication
