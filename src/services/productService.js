@@ -81,36 +81,41 @@ class ProductFactory {
   }
 
   static async findAllOrTypePublishProduct({ page, limit, product_type }) {
-    console.log(
-      "🚀 ~ ProductFactory ~ findAllOrTypePublishProduct ~ page:",
-      page
-    );
     // Xây dựng điều kiện tìm kiếm
     const query = {};
+    query.isPublished = true;
     if (product_type) {
       query.product_type = product_type; // Tìm theo danh mục
-      query.isPublished = true; // Tìm theo isPublished
+      // Tìm theo isPublished
     }
 
     // Tính toán số lượng dữ liệu cần lấy
-    const skip = (+page - 1) * +limit;
+    const skip = Math.max((+page - 1) * +limit, 0);
+
+    console.log(
+      "🚀 ~ ProductFactory ~ findAllOrTypePublishProduct ~ page:",
+      +page,
+      +limit,
+      skip
+    );
 
     // Lấy danh sách sản phẩm
     const products = await productModel
       .find(query) // Áp dụng điều kiện tìm kiếm
       .skip(skip) // Bỏ qua số lượng sản phẩm cho phân trang
       .limit(parseInt(limit)) // Giới hạn số lượng sản phẩm mỗi trang
-      .sort({ createdAt: -1 }) // Sắp xếp theo thời gian tạo mới nhất
-      .select("-isDraft -isPublished"); // Ẩn các trường không cần thiết
+      .sort({ createdAt: -1, _id: -1 }) // Sắp xếp theo thời gian tạo mới nhất
+      .select("-isDraft -isPublished")
+      .lean();
 
     // Đếm tổng số sản phẩm
-    const totalProducts = await productModel.countDocuments(query);
+    const total = await productModel.countDocuments(query);
 
     // Trả về kết quả
     return {
       currentPage: +page,
-      totalPages: Math.ceil(totalProducts / limit),
-      totalProducts,
+      totalPages: Math.ceil(total / limit),
+      total,
       data: products,
     };
   }
