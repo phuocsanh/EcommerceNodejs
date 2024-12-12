@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const { default: helmet } = require("helmet");
 const compression = require("compression");
 const cors = require("cors");
+const cloudinaryService = require("./services/cloudinary");
 
 const { checkOverload } = require("./helpers");
 
@@ -22,6 +23,8 @@ app.use(compression());
 require("./dbs/initMongo");
 const initRedis = require("./dbs/initRedis");
 initRedis.initRedis();
+
+cloudinaryService();
 // checkOverload();
 
 // Test pub sub
