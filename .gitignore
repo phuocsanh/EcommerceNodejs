@@ -1,2 +1,34 @@
 node_modules
+
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Yarn state
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# Yarn error reports
+.yarnrc.yml
+.yarnrc.local.yml
+
+# Cache
+.yarn/cache
+.yarn/global-cache
+
+# Yarn unplugged packages
+.yarn/unplugged/
+
 .env
