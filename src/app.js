@@ -4,7 +4,7 @@ const morgan = require("morgan");
 const { default: helmet } = require("helmet");
 const compression = require("compression");
 const cors = require("cors");
-const cloudinaryService = require("./services/cloudinary");
+const cloudinaryService = require("./services/cloudinaryService");
 
 const { checkOverload } = require("./helpers");
 

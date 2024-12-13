@@ -6,8 +6,6 @@ const {
 const accessService = require("../services/accessService");
 const accessController = {
   async handleRefreshToken(req, res, next) {
-    console.log("🚀 ~ handleRefreshToken ~ req.user:", req.keyStore);
-
     SendResponseSuccess({
       res,
       message: "Get token success",
@@ -16,6 +14,14 @@ const accessController = {
         user: req.user,
         keyStore: req.keyStore,
       }),
+    });
+  },
+
+  async forgetPassword(req, res, next) {
+    SendResponseSuccess({
+      res,
+      message: "ForgetPassword successfully",
+      data: await accessService.forgetPassword(req.body),
     });
   },
   async logout(req, res, next) {

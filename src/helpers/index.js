@@ -17,7 +17,6 @@ const authentication = asyncHandleError(async (req, res, next) => {
   // get access token
 
   const keyStore = await findUserById(userId);
-  console.log("🚀 ~ authentication ~ keyStore:", keyStore.privateKey);
   if (!keyStore) throw new NotFoundError("Not found keyStore");
 
   if (req.headers[HEADER.REFRESHTOKEN]) {

@@ -19,6 +19,19 @@ function getUserKey(hashKey) {
   return `u:${hashKey}:otp`;
 }
 
+function generateRandomPassword(length = 8) {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let password = "";
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    password += characters[randomIndex];
+  }
+
+  return password;
+}
+
 const generateSixDigitOtp = () => {
   return crypto.randomInt(100000, 1000000); // Tạo số ngẫu nhiên từ 100000 đến 999999
 };
@@ -102,4 +115,5 @@ module.exports = {
   unGetSelectData,
   removeUndefinedObject,
   updateNestedObjectParser,
+  generateRandomPassword,
 };

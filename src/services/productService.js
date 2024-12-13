@@ -92,13 +92,6 @@ class ProductFactory {
     // Tính toán số lượng dữ liệu cần lấy
     const skip = Math.max((+page - 1) * +limit, 0);
 
-    console.log(
-      "🚀 ~ ProductFactory ~ findAllOrTypePublishProduct ~ page:",
-      +page,
-      +limit,
-      skip
-    );
-
     // Lấy danh sách sản phẩm
     const products = await productModel
       .find(query) // Áp dụng điều kiện tìm kiếm

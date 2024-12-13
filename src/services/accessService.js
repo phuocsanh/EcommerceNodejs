@@ -9,6 +9,7 @@ const {
   getHash,
   generateSixDigitOtp,
   mongoObjectId,
+  generateRandomPassword,
 } = require("../utils");
 const {
   BadRequestError,
@@ -33,17 +34,16 @@ const roles = {
 };
 const accessService = {
   async handleRefreshToken({ refreshToken, user, keyStore }) {
-    console.log("🚀 ~ handleRefreshToken ~ keyStore:", keyStore);
     const { userId, email } = user;
     if (keyStore.refreshTokenUsed.includes(refreshToken)) {
       await KeyTokenService.deleteKeyById(userId);
-      throw new ForbiddenError("Something wrong happened, Please relogin!");
+      throw new ForbiddenError("Có sự có, Vui lòng đăng nhập lại!");
     }
     if (keyStore.refreshToken !== refreshToken) {
-      throw new AuthFailureError("Shop not register");
+      throw new AuthFailureError("Lỗi xác thực");
     }
     const found = findUserByEmail(email);
-    if (!found) throw new AuthFailureError("Shop not register");
+    if (!found) throw new AuthFailureError("Người dùng chưa đăng kí");
     const tokens = await createTokenPair(
       { userId, email },
       keyStore.publicKey,
@@ -70,14 +70,13 @@ const accessService = {
 
   async login({ email, password, refreshToken = null }) {
     const user = await userService.findUserByEmail(email);
-    console.log("🚀 ~ login ~ user:", user._id);
     if (!user) {
-      throw new BadRequestError("Not found email");
+      throw new BadRequestError("Không tìm thấy email");
     }
 
-    const match = bcrypt.compare(password, user.password);
+    const match = await bcrypt.compare(password, user.password);
     if (!match) {
-      throw new AuthFailureError("Authentication error");
+      throw new AuthFailureError("Sai email hoặc mật khẩu!");
     }
 
     const publicKey = crypto.randomBytes(64).toString("hex");
@@ -105,16 +104,13 @@ const accessService = {
   async registerEmail({ email }) {
     const user = await userModel.findOne({ email }).lean();
     if (user) {
-      throw new BadRequestError("Email address is already");
+      throw new BadRequestError("Email đã được đăng ký rồi");
     }
     const hashKey = getHash(email.toLowerCase());
-    console.log("Hashed key:", hashKey);
     const otp = generateSixDigitOtp();
     const data = await setAsyncRedis(hashKey, otp.toString(), { EX: 5 * 60 });
     if (data !== "OK") {
-      throw new BadRequestError(
-        `Failed to set key ${hashKey} with expiration.`
-      );
+      throw new BadRequestError(`Gửi otp thất bại`);
     }
     //. Save otp to MongoDB
     const verify = await userVerifyModel.create({
@@ -123,12 +119,16 @@ const accessService = {
       verifyKeyHash: hashKey,
     });
     if (!verify) {
-      throw new BadRequestError("Send mail failed");
+      throw new BadRequestError("Gửi otp thất bại");
     }
 
-    const res = await sendTextEmailOtp(email, otp);
+    const res = await sendTextEmailOtp({
+      to: email,
+      text: `Mã OTP của bạn là ${otp}. Vui lòng nhập để xác thực tài khoản.`,
+      html: `<strong>Mã OTP của bạn là ${otp}. Vui lòng nhập để xác thực tài khoản.</strong>`,
+    });
     if (!res.success) {
-      throw new BadRequestError("Send mail failed");
+      throw new BadRequestError("Gửi otp thất bại");
     }
     return {
       otp: otp,
@@ -139,16 +139,16 @@ const accessService = {
 
     let otpFound = await getAsyncRedis(hashKey);
     if (!otpFound) {
-      throw new BadRequestError(`Not found otp`);
+      throw new BadRequestError(`Không tìm thấy otp`);
     }
 
     if (otpFound !== verify_code) {
-      throw new BadRequestError(`Otp not match`);
+      throw new BadRequestError(`Otp không khớp`);
     }
 
     otpFound = await userVerifyModel.findOne({ verifyKeyHash: hashKey }).lean();
     if (!otpFound) {
-      throw new BadRequestError(`Not found otp mongo`);
+      throw new BadRequestError(`Không tìm thấy otp`);
     }
 
     otpFound = await userVerifyModel.findByIdAndUpdate(
@@ -159,7 +159,7 @@ const accessService = {
       }
     );
     if (!otpFound) {
-      throw new BadRequestError(`Update isverify error`);
+      throw new BadRequestError(`Xác thực otp lỗi`);
     }
     return {
       token: otpFound.verifyKeyHash,
@@ -171,11 +171,11 @@ const accessService = {
       .lean();
 
     if (!userVerify) {
-      throw new BadRequestError(`Not found user`);
+      throw new BadRequestError(`Không tìm thấy tài khoản`);
     }
 
     if (!userVerify.isVerify) {
-      throw new BadRequestError(`User not verify yet`);
+      throw new BadRequestError(`Tài khoản chưa xác thực`);
     }
 
     const passwordHash = await bcrypt.hash(user_password, 10);
@@ -186,7 +186,7 @@ const accessService = {
       roles: roles.USER,
     });
     if (!newUser) {
-      throw new BadRequestError(`CreateShop failed`);
+      throw new BadRequestError(`Tạo mật khẩu lỗi`);
     }
 
     return {
@@ -194,6 +194,41 @@ const accessService = {
         fields: ["_id", "email", "name"],
         object: newUser,
       }),
+    };
+  },
+  async forgetPassword({ email }) {
+    const user = await userModel.findOne({ email: email }).lean();
+
+    if (!user) {
+      throw new BadRequestError(`Không tìm thấy tài khoản`);
+    }
+
+    const newPass = generateRandomPassword();
+    const passwordHash = await bcrypt.hash(newPass, 10);
+    const newUser = await userModel.findByIdAndUpdate(
+      user._id,
+      { password: passwordHash },
+      { new: true, runValidators: true }
+    );
+    if (!newUser) {
+      throw new BadRequestError(`Không tìm thấy tài khoản!`);
+    }
+    const res = await sendTextEmailOtp({
+      to: email,
+      newPass,
+      subject: "Quên mật khẩu",
+      text: `Mật khẩu của bạn là ${newPass}. Vui lòng dùng mật khẩu mới để đăng nhập.`,
+      html: `<strong>Mật khẩu của bạn là  ${newPass}. Vui lòng dùng mật khẩu mới để đăng nhập.</strong>`,
+    });
+    if (!res.success) {
+      throw new BadRequestError("Gửi mật khẩu mới thất bại!");
+    }
+    return {
+      user: getDataByFields({
+        fields: ["_id", "email", "name"],
+        object: newUser,
+      }),
+      timmeCountDown: 60,
     };
   },
 };

@@ -11,16 +11,15 @@ const transporter = nodemailer.createTransport({
 });
 
 // Hàm gửi email
-async function sendTextEmailOtp(to, otp) {
-  console.log("Gửi email OTP tới:", to);
-  console.log("OTP:", otp);
-
+async function sendTextEmailOtp({ to, subject = "Xác thực OTP ", text, html }) {
   const mailOptions = {
     from: "phuocsanhtps@gmail.com", // Địa chỉ người gửi
     to: to, // Địa chỉ người nhận
-    subject: "OTP Verification", // Tiêu đề email
-    text: `Your OTP is ${otp}. Please enter it to verify your account.`, // Nội dung email dạng text
-    html: `<strong>Your OTP is ${otp}. Please enter it to verify your account.</strong>`, // Nội dung email dạng HTML
+    subject: subject, // Tiêu đề email
+    text: text || "",
+    html: html || "",
+    // text: `Your OTP is ${otp}. Please enter it to verify your account.`,
+    // html: `<strong>Your OTP is ${otp}. Please enter it to verify your account.</strong>`,
   };
 
   try {
