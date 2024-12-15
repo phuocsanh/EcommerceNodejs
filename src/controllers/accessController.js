@@ -8,7 +8,7 @@ const accessController = {
   async handleRefreshToken(req, res, next) {
     SendResponseSuccess({
       res,
-      message: "Get token success",
+      message: "Lấy token thành công",
       data: await accessService.handleRefreshToken({
         refreshToken: req.refreshToken,
         user: req.user,
@@ -17,31 +17,42 @@ const accessController = {
     });
   },
 
+  async changePassword(req, res, next) {
+    SendResponseSuccess({
+      res,
+      message: "Đổi mật khẩu thành công",
+      data: await accessService.changePassword({
+        userId: req.user.userId,
+        password: req.body.password,
+        password_old: req.body.password_old,
+      }),
+    });
+  },
   async forgetPassword(req, res, next) {
     SendResponseSuccess({
       res,
-      message: "ForgetPassword successfully",
+      message: "Quên mật khẩu thành công",
       data: await accessService.forgetPassword(req.body),
     });
   },
   async logout(req, res, next) {
     SendResponseSuccess({
       res,
-      message: "Logout successfully",
+      message: "Đăng xuất thành công",
       data: await accessService.logout(req.keyStore),
     });
   },
   async login(req, res, next) {
     SendResponseSuccess({
       res,
-      message: "Login successfully",
+      message: "Đăng nhập thành công",
       data: await accessService.login(req.body),
     });
   },
   async registerEmail(req, res, next) {
     SendResponseCreate({
       res,
-      message: "Register successfully",
+      message: "Đăng ký thành công",
       data: await accessService.registerEmail(req.body),
     });
   },
@@ -55,7 +66,7 @@ const accessController = {
   async updatePasswordRegister(req, res, next) {
     SendResponseCreate({
       res,
-      message: "Create shop successfully",
+      message: "Tạo mật khẩu thành công",
       data: await accessService.updatePasswordRegister(req.body),
     });
   },

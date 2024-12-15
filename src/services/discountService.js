@@ -74,6 +74,29 @@ class DiscountService {
     });
     return newDiscount;
   }
+
+  // Hàm lấy danh sách discount
+  static async getTopDiscounts() {
+    const discounts = await discountModel.aggregate([
+      // Bước 1: Lọc các discount đang hoạt động (nếu cần)
+      {
+        $match: {
+          discount_is_active: true, // Lọc chỉ những discount đang hoạt động
+        },
+      },
+      // Bước 2: Sắp xếp theo discount_type và discount_value
+      {
+        $sort: {
+          discount_type: 1, // Sắp xếp PERCENT trước FIXED (hoặc ngược lại)
+          discount_value: -1, // Sắp xếp discount_value từ thấp đến cao
+        },
+      },
+    ]);
+    if (!discounts) {
+      throw new BadRequestError("Không tìm thấy mã phù hợp");
+    }
+    return discounts;
+  }
   static async updatdeDiscountCode() {}
 
   static async getAllDiscountCodeWithProduct({ code, shopId, limit, page }) {

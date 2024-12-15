@@ -52,6 +52,19 @@ const productSchema = new mongoose.Schema(
       ref: "shopModel",
       required: true,
     },
+
+    discount: {
+      type: Number,
+      default: 0,
+    },
+    product_discountedPrice: {
+      type: Number,
+      required: true,
+    },
+    product_selled: {
+      type: Number,
+      default: 0,
+    },
     product_attributes: { type: mongoose.Schema.Types.Mixed, required: true },
     isDraft: { type: Boolean, default: false, index: true, select: false },
     isPublished: { type: Boolean, default: true, index: true, select: false },
@@ -61,13 +74,44 @@ const productSchema = new mongoose.Schema(
     collection: COLLECTION_NAME_PRODUCT,
   }
 );
-
+productSchema.index({ isPublished: 1, product_type: 1 });
 productSchema.index({ product_name: "text", product_description: "text" });
 //middleware runs before save() and create().....
 productSchema.pre("save", function (next) {
   this.product_slug = slugify(this.product_name, { lower: true });
   next();
 });
+
+productSchema.pre("save", function (next) {
+  if (this.discount) {
+    // Giảm giá theo %
+    this.product_discountedPrice =
+      this.product_price - (this.product_price * this.discount) / 100;
+  } else {
+    this.product_discountedPrice = this.product_price; // Không có discount
+  }
+  next();
+});
+
+// Middleware tính giá sau giảm khi update
+productSchema.pre("findOneAndUpdate", function (next) {
+  const update = this.getUpdate();
+
+  const product_price = update.product_price || this.getQuery().product_price;
+  const discount = update.discount || this.getQuery().discount;
+  if (discount) {
+    // Giảm giá theo %
+    update.product_discountedPrice =
+      product_price - (product_price * discount) / 100;
+
+    // Giảm giá cố định
+  } else {
+    update.product_discountedPrice = this.product_price; // Không giảm giá
+  }
+
+  next();
+});
+
 const clothingSchema = new mongoose.Schema(
   {
     product_shop: {

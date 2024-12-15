@@ -9,6 +9,14 @@ router.post(
   asyncHandleError(productController.insertFakedProduct)
 );
 router.get(
+  "/getProductsByDiscount",
+  asyncHandleError(productController.getProductsByDiscount)
+);
+router.get(
+  "/getProductsBySelled",
+  asyncHandleError(productController.getProductsBySelled)
+);
+router.get(
   "/findAllOrTypePublishProduct",
   asyncHandleError(productController.findAllOrTypePublishProduct)
 );

@@ -4,6 +4,7 @@ const accessController = require("../../controllers/accessController");
 const { asyncHandleError, authentication } = require("../../helpers");
 const router = express.Router();
 // signup
+
 router.post(
   "/forgetPassword",
   asyncHandleError(accessController.forgetPassword)
@@ -18,6 +19,10 @@ router.post("/verifyOtp", asyncHandleError(accessController.verifyOTP));
 router.post("/login", asyncHandleError(accessController.login));
 // authentication
 router.use(authentication);
+router.post(
+  "/changePassword",
+  asyncHandleError(accessController.changePassword)
+);
 //logout
 router.post("/logout", asyncHandleError(accessController.logout));
 router.post(

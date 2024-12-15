@@ -9,8 +9,15 @@ const discountSchema = new mongoose.Schema(
       type: String,
       require: true,
     }, // Tên
-    discount_description: { type: String, require: true }, // Mô tả
-    discount_type: { type: String, default: "fixed_amount" }, // loại
+    discount_description: {
+      type: String,
+      require: true,
+    }, // Mô tả
+    discount_type: {
+      type: String,
+      default: "FIXED",
+      enum: ["PERCENT", "FIXED"],
+    }, // loại
     discount_value: { type: Number, require: true }, // Giá trị
     discount_code: { type: String, require: true }, // Mã
     discount_start_date: { type: Date, require: true }, // Ngày bắt đầu

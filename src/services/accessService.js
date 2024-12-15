@@ -165,6 +165,7 @@ const accessService = {
       token: otpFound.verifyKeyHash,
     };
   },
+
   async updatePasswordRegister({ user_token, user_password }) {
     const userVerify = await userVerifyModel
       .findOne({ verifyKeyHash: user_token })
@@ -196,6 +197,36 @@ const accessService = {
       }),
     };
   },
+  async changePassword({ userId, password, password_old }) {
+    const user = await userModel.findById(userId).lean();
+
+    if (!user) {
+      throw new BadRequestError(`Không tìm thấy tài khoản`);
+    }
+
+    const match = await bcrypt.compare(password_old, user.password);
+    if (!match) {
+      throw new BadRequestError(`Sai mật khẩu!`);
+    }
+    const passwordHash = await bcrypt.hash(password, 10);
+    const newUser = await userModel.findByIdAndUpdate(
+      user._id,
+      { password: passwordHash },
+      { new: true, runValidators: true }
+    );
+
+    if (!newUser) {
+      throw new BadRequestError(`Đổi mật khẩu thất bại`);
+    }
+
+    return {
+      user: getDataByFields({
+        fields: ["_id", "email", "name"],
+        object: newUser,
+      }),
+    };
+  },
+
   async forgetPassword({ email }) {
     const user = await userModel.findOne({ email: email }).lean();
 
@@ -211,7 +242,7 @@ const accessService = {
       { new: true, runValidators: true }
     );
     if (!newUser) {
-      throw new BadRequestError(`Không tìm thấy tài khoản!`);
+      throw new BadRequestError(`Quên mật khẩu thất bại!`);
     }
     const res = await sendTextEmailOtp({
       to: email,

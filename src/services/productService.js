@@ -80,13 +80,22 @@ class ProductFactory {
     return await findAllPublishForShop({ query, limit, skip });
   }
 
-  static async findAllOrTypePublishProduct({ page, limit, product_type }) {
+  static async findAllOrTypePublishProduct({
+    page,
+    limit,
+    product_type,
+    keyword,
+  }) {
     // Xây dựng điều kiện tìm kiếm
     const query = {};
     query.isPublished = true;
     if (product_type) {
       query.product_type = product_type; // Tìm theo danh mục
       // Tìm theo isPublished
+    }
+    if (keyword) {
+      // Tìm kiếm gần đúng theo keyword
+      query.product_name = { $regex: keyword, $options: "i" };
     }
 
     // Tính toán số lượng dữ liệu cần lấy
@@ -98,6 +107,77 @@ class ProductFactory {
       .skip(skip) // Bỏ qua số lượng sản phẩm cho phân trang
       .limit(parseInt(limit)) // Giới hạn số lượng sản phẩm mỗi trang
       .sort({ createdAt: -1, _id: -1 }) // Sắp xếp theo thời gian tạo mới nhất
+      .select("-isDraft -isPublished")
+      .lean();
+
+    // Đếm tổng số sản phẩm
+    const total = await productModel.countDocuments(query);
+
+    // Trả về kết quả
+    return {
+      currentPage: +page,
+      totalPages: Math.ceil(total / limit),
+      total,
+      data: products,
+    };
+  }
+  static async getProductsByDiscount({ page, limit, product_type, keyword }) {
+    // Xây dựng điều kiện tìm kiếm
+    const query = {};
+    query.isPublished = true;
+    if (product_type) {
+      query.product_type = product_type; // Tìm theo danh mục
+      // Tìm theo isPublished
+    }
+    if (keyword) {
+      // Tìm kiếm gần đúng theo keyword
+      query.product_name = { $regex: keyword, $options: "i" };
+    }
+    // Tính toán số lượng dữ liệu cần lấy
+    const skip = Math.max((+page - 1) * +limit, 0);
+
+    // Lấy danh sách sản phẩm
+    const products = await productModel
+      .find(query) // Áp dụng điều kiện tìm kiếm
+      .skip(skip) // Bỏ qua số lượng sản phẩm cho phân trang
+      .limit(parseInt(limit)) // Giới hạn số lượng sản phẩm mỗi trang
+      .sort({ discount: -1, _id: -1 })
+      .select("-isDraft -isPublished")
+      .lean();
+
+    // Đếm tổng số sản phẩm
+    const total = await productModel.countDocuments(query);
+
+    // Trả về kết quả
+    return {
+      currentPage: +page,
+      totalPages: Math.ceil(total / limit),
+      total,
+      data: products,
+    };
+  }
+
+  static async getProductsBySelled({ page, limit, product_type, keyword }) {
+    // Xây dựng điều kiện tìm kiếm
+    const query = {};
+    query.isPublished = true;
+    if (product_type) {
+      query.product_type = product_type; // Tìm theo danh mục
+      // Tìm theo isPublished
+    }
+    if (keyword) {
+      // Tìm kiếm gần đúng theo keyword
+      query.product_name = { $regex: keyword, $options: "i" };
+    }
+    // Tính toán số lượng dữ liệu cần lấy
+    const skip = Math.max((+page - 1) * +limit, 0);
+
+    // Lấy danh sách sản phẩm
+    const products = await productModel
+      .find(query) // Áp dụng điều kiện tìm kiếm
+      .skip(skip) // Bỏ qua số lượng sản phẩm cho phân trang
+      .limit(parseInt(limit)) // Giới hạn số lượng sản phẩm mỗi trang
+      .sort({ product_selled: -1, _id: -1 })
       .select("-isDraft -isPublished")
       .lean();
 
